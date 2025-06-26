@@ -878,7 +878,7 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
             </div>
 
             {/* Header Section */}
-            <div className={`flex h-[18vh] lg:h-[10vh] content-center justify-between align-middle px-4 transition-all duration-300 ${
+            <div className={`flex h-[8vh] lg:h-[10vh] content-center justify-between align-middle px-4 transition-all duration-300 ${
                 isScrolled
                     ? 'bg-white'
                     : 'bg-transparent'
@@ -949,7 +949,7 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                 {/* Logo - Center */}
                 <Link href="/" className="flex-1 flex justify-center items-center">
                     <Image
-                        className="lg:h-[15vh] w-[50vw] lg:w-auto"
+                        className="h-10vh lg:h-[15vh] w-[50vw] lg:w-auto"
                         src={Logo3}
                         alt="Logo"
                         priority
@@ -1038,16 +1038,17 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                     </button>
 
                     <button onClick={() => setShow(!show)}>
-                        <Image
-                            className="h-[4vh] lg:h-[6vh] p-2"
-                            src={CartSVG}
-                            alt="cart"
-                            width={40}
-                            height={40}
-                            style={{
-                                filter: isScrolled ? 'brightness(0)' : 'brightness(1)'
-                            }}
-                        />
+                        {/*<Image*/}
+                        {/*    className="h-[4vh] lg:h-[6vh] p-2 text-white fill-white"*/}
+                        {/*    src={CartSVG}*/}
+                        {/*    alt="cart"*/}
+                        {/*    width={40}*/}
+                        {/*    height={40}*/}
+                        {/*    style={{*/}
+                        {/*        filter: isScrolled ? 'brightness(0)' : 'brightness(1)'*/}
+                        {/*    }}*/}
+                        {/*/>*/}
+
                     </button>
                 </div>
             </div>
