@@ -1,8 +1,9 @@
 //app/api/wishlist/route.js
 import { NextRequest, NextResponse } from 'next/server';
-import connectMongoDB from '../../../lib/config/db';
-import Wishlist from '../../../lib/models/Wishlist';
-import { verifyToken } from '../../../lib/utils/auth';
+import connectMongoDB from '@/lib/config/db';
+import Wishlist from '@/lib/models/Wishlist';
+import { verifyToken } from '@/lib/utils/auth';
+import Product from '@/lib/models/Product';
 
 export async function POST(request) {
     try {

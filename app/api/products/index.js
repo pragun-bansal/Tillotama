@@ -8,13 +8,13 @@ export default async function handler(req, res) {
         try {
             const products = await Product.find();
             return res.status(200).json({
-                message: "Products Found Successfully",
+                message: "product Found Successfully",
                 data: products
             });
         } catch (err) {
             console.log(err);
             return res.status(404).json({
-                message: "Products can't be fetched",
+                message: "product can't be fetched",
                 error: err
             });
         }

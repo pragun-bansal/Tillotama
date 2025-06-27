@@ -1,7 +1,7 @@
 //app/api/reviews/update/route.js
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '../../../../lib/config/db';
-import Reviews from '../../../../lib/models/Reviews';
+import Reviews from '../../../../lib/models/Review';
 import { verifyToken } from '../../../../lib/utils/auth';
 
 export async function POST(request) {

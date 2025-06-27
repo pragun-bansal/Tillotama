@@ -12,13 +12,13 @@ export async function GET() {
 
         const products = await Product.find();
         return NextResponse.json({
-            message: "Products Found Successfully",
+            message: "product Found Successfully",
             data: products
         });
     } catch (err) {
         console.log(err);
         return NextResponse.json({
-            message: "Products can't be fetched",
+            message: "product can't be fetched",
             error: err.message
         }, { status: 404 });
     }

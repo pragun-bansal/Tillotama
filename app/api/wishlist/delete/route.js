@@ -24,7 +24,7 @@ export async function POST(request) {
         if (!wishlist) {
             return NextResponse.json({
                 success: false,
-                message: "Wishlist Not Found"
+                message: "wishlist Not Found"
             }, { status: 404 });
         }
 

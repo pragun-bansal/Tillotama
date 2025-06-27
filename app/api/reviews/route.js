@@ -2,7 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '../../../lib/config/db';
 import Product from '../../../lib/models/Product';
-import Reviews from '../../../lib/models/Reviews';
+import Reviews from '../../../lib/models/Review';
 
 export async function POST(request) {
     try {

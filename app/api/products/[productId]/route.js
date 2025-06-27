@@ -2,6 +2,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '../../../../lib/config/db';
 import Product from '../../../../lib/models/Product';
+import {uploadImageToCloudinary} from '@/lib/utils/cloudinaryUpload'; // Adjust path as needed
 
 export async function GET(request, { params }) {
     try {

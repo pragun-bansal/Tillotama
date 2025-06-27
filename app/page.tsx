@@ -110,6 +110,8 @@ import Footer from '../components/Footer';
 import ShuffleHero from "@/components/Home/ShuffleHero";
 import {HeroScrollDemo} from "@/components/Home/HeroScrollDemo";
 import HeroSlideshow from "@/components/Home/HeroSlideShow";
+import {LayoutGridDemo} from "@/components/Home/LayoutGridDemo";
+import {MarqueeDemo} from "@/components/Home/MarqueeDemo";
 
 export default function HomePage() {
   const [showCart, setShowCart] = useState(false);
@@ -119,33 +121,10 @@ export default function HomePage() {
         {/*<Navbar show={showCart} setShow={setShowCart} />*/}
           <HeroSlideshow />
         <ShuffleHero />
-          <HeroScrollDemo />
+          <LayoutGridDemo />
+          <MarqueeDemo />
+          {/*<HeroScrollDemo />*/}
 
-        {/*<div className="container mx-auto px-4 py-8">*/}
-        {/*  <h1 className="text-4xl font-bold text-center text-pink mb-8">*/}
-        {/*    Welcome to Tilottama By Archana*/}
-        {/*  </h1>*/}
-
-        {/*  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">*/}
-        {/*    /!* Your content here *!/*/}
-        {/*    <div className="bg-white p-6 rounded-lg shadow-md">*/}
-        {/*      <h2 className="text-xl font-semibold mb-4 text-primary-700">Featured Products</h2>*/}
-        {/*      <p className="text-gray-600">Discover our latest collection of premium fashion items.</p>*/}
-        {/*    </div>*/}
-
-        {/*    <div className="bg-lightpink p-6 rounded-lg shadow-md">*/}
-        {/*      <h2 className="text-xl font-semibold mb-4 text-primary-800">Special Offers</h2>*/}
-        {/*      <p className="text-gray-700">Don't miss out on our exclusive deals and discounts.</p>*/}
-        {/*    </div>*/}
-
-        {/*    <div className="bg-secondary-100 p-6 rounded-lg shadow-md">*/}
-        {/*      <h2 className="text-xl font-semibold mb-4 text-secondary-800">About Us</h2>*/}
-        {/*      <p className="text-gray-700">Learn more about our brand and commitment to quality.</p>*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*</div>*/}
-
-        {/*<Footer />*/}
       </main>
   );
 }
