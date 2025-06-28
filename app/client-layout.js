@@ -16,7 +16,7 @@ export default function ClientLayout({ children }) {
         <>
             <Navbar show={showCart} setShow={setShowCart} />
             <Cart show={showCart} setShow={setShowCart} />
-            <main className={isHomePage ? "" : "mt-22 md:mt-32"}>
+            <main className={isHomePage ? "" : "mt-27 md:mt-32"}>
                 {children}
             </main>
             <Footer />

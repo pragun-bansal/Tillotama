@@ -263,13 +263,13 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
             </div>
 
             {/* Header Section */}
-            <div className={`flex h-[8vh] lg:h-[10vh] content-center justify-between align-middle px-4 transition-all duration-300 ${
+            <div className={`flex h-[10vh] lg:h-[10vh] content-center justify-between align-middle px-4 transition-all duration-300 ${
                 isScrolled
                     ? 'bg-white'
                     : 'bg-transparent'
             }`}>
                 {/* Navigation Toggle & Search Section - Left Side */}
-                <div className="absolute left-0 lg:mt-[3vh]">
+                <div className="absolute left-0 md:mt-[3vh]">
                 <div className="flex items-center space-x-3">
                     <button
                         onClick={() => setNavDropdown(!navDropdown)}
@@ -295,7 +295,7 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                     </button>
 
                     {/* Updated Search Form with proper functionality */}
-                    <form className="hidden md:block w-64" onSubmit={handleSearch}>
+                    <form className="hidden md:block w-48 lg:w-64" onSubmit={handleSearch}>
                         <div className="relative">
                             <button
                                 type="submit"
@@ -349,7 +349,7 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                 {/* Logo - Center */}
                 <Link href="/" className="flex-1 flex justify-center">
                     <Image
-                        className="h-8vh lg:h-[10vh] w-auto"
+                        className="h-15vh lg:h-[10vh] w-auto"
                         src={Logo3}
                         alt="Logo"
                         priority
@@ -358,9 +358,9 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
 
                 {/* User Actions - Right Side */}
                 <div className="absolute right-0 lg:mt-[2.5vh]">
-                <div className="flex items-center md:space-x-2">
+                <div className="flex items-center space-x-0 md:space-x-2">
                     {token ? (
-                        <div className="mb-4 lg:mb-0 md:mr-1 h-[4vh] lg:h-[5vh] translate-y-[2.5vh] p-2 ">
+                        <div className="mb-4 lg:mb-0 md:mr-1 h-[4vh] lg:h-[5vh] translate-y-[3vh] p-0 ">
                             <button
                                 onMouseOver={() => setDropdown2(true)}
                                 onMouseOut={() => setDropdown2(false)}
@@ -427,7 +427,7 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
 
                     <button onClick={() => router.push('/wishlist')}>
                         <svg
-                            className={`h-[4vh] lg:h-[5vh] translate-y-[2.5vh] p-2 transition-colors duration-300  ${
+                            className={`h-[3vh] lg:h-[5vh] translate-y-[2.5vh] p-1 lg:p-2 transition-colors duration-300  ${
                                 isScrolled ? 'fill-pink hover:fill-pink-500 ' : 'fill-pink/20 hover:fill-pink-500/50 '
                             }`}
                             xmlns="http://www.w3.org/2000/svg"
@@ -439,19 +439,52 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                     </button>
 
                     <button onClick={() => setShow(!show)}>
-                        <Image
-                            className="h-[4vh] lg:h-[5vh] translate-y-[2.5vh] p-2 "
-                            src={CartSVG}
-                            alt="cart"
-                            width={40}
-                            height={40}
-                            style={{
-                                filter: isScrolled ? 'brightness(0)' : 'brightness(1)'
-                            }}
-                        />
+                        {/*<Image*/}
+                        {/*    className="h-[3vh] lg:h-[5vh] translate-y-[2.5vh] p-1 lg:p-2"*/}
+                        {/*    src={CartSVG}*/}
+                        {/*    alt="cart"*/}
+                        {/*    width={40}*/}
+                        {/*    height={40}*/}
+                        {/*    style={{*/}
+                        {/*        filter: isScrolled ? 'brightness(0)' : 'brightness(1)'*/}
+                        {/*    }}*/}
+                        {/*/>*/}
+                        {/*<svg*/}
+                        {/*    className={`h-[3vh] lg:h-[5vh] translate-y-[2.5vh] p-1 lg:p-2 transition-colors duration-300  ${*/}
+                        {/*        isScrolled ? 'fill-pink hover:fill-pink-500 ' : 'fill-pink/20 hover:fill-pink-500/50 '*/}
+                        {/*    }`}*/}
+                        {/*    xmlns="http://www.w3.org/2000/svg" viewBox="0 0 216.1 208.3">*/}
+                        {/*    <style>{`.st6{fill:#4a4a4a}.st10{fill:#2a2a2a}.st11{fill:none;stroke:#000000;stroke-width:6.8376}.st15{fill:#6a6a6a}`}</style>*/}
+                        {/*    <g id="Layer_4">*/}
+                        {/*        <path transform="matrix(1 -.00483 .00483 1 -.522 .436)" className="st6" d="M53.6 73.3h73.2v70.1H53.6z"/>*/}
+                        {/*        <path className="st15" d="m126.7 96.5-73.3-23 73.2-.4z"/>*/}
+                        {/*        <path transform="matrix(-1 .00483 -.00483 -1 305.275 215.427)" className="st10" d="M126.7 73H178v70.1h-51.3z"/>*/}
+                        {/*        <path transform="matrix(1 -.00483 .00483 1 -.297 .423)" className="st6" d="M47.6 50h80v23.4h-80z"/>*/}
+                        {/*        <path transform="matrix(-1 .00483 -.00483 -1 311.392 121.89)" className="st10" d="M127.5 49.6h56V73h-56z"/>*/}
+                        {/*        <g>*/}
+                        {/*            <path transform="matrix(1 -.00483 .00483 1 -.149 .415)" className="st6" d="M66.5 12.6h38.6v37H66.5z"/>*/}
+                        {/*            <path className="st15" d="M105 24.8 66.4 12.6l38.5-.1z"/>*/}
+                        {/*            <path transform="matrix(-1 .00483 -.00483 -1 237.202 61.18)" className="st10" d="M105 12.4h27v37h-27z"/>*/}
+                        {/*            <path transform="matrix(1 -.00483 .00483 1 -.03 .407)" className="st6" d="M63.3.2h42.1v12.3H63.3z"/>*/}
+                        {/*            <path transform="matrix(-1 .00483 -.00483 -1 240.425 11.88)" className="st10" d="M105.4.1h29.5v12.3h-29.5z"/>*/}
+                        {/*        </g>*/}
+                        {/*        <g>*/}
+                        {/*            <path className="st11" d="M0 51.1h27.4l17 95.7h157.3"/>*/}
+                        {/*            <path className="st11" d="M30.8 75H212l-13.7 71.8M201.7 170.7H46.2c-6.6 0-12-5.4-12-12s5.4-12 12-12h15.4"/>*/}
+                        {/*            <circle className="st11" cx="61.5" cy="194.6" r="10.3"/>*/}
+                        {/*            <circle className="st11" cx="188" cy="194.6" r="10.3"/>*/}
+                        {/*        </g>*/}
+                        {/*    </g>*/}
+                        {/*</svg>*/}
+                        <svg
+                            className={`h-[3vh] lg:h-[5vh] translate-y-[2.5vh] p-0 lg:p-0 transition-colors duration-300  ${
+                                isScrolled ? 'fill-pink hover:fill-pink-500 ' : 'fill-pink/20 hover:fill-pink-500/50 '
+                            }`}
+
+                            xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M351.9 329.506H206.81l-3.072-12.56H368.16l26.63-116.019-217.23-26.04-9.952-58.09h-50.4v21.946h31.894l35.233 191.246a32.927 32.927 0 1 0 36.363 21.462h100.244a32.825 32.825 0 1 0 30.957-21.945zM181.427 197.45l186.51 22.358-17.258 75.195H198.917z" data-name="Shopping Cart"/></svg>
                     </button>
                 </div>
-            </div>
+                </div>
             </div>
 
             {/* Navigation Bar - Dropdown Style */}

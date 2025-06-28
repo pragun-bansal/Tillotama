@@ -255,9 +255,9 @@ useEffect(() => {
     }
 
     return (
-        <div className='mx-[2%] py-8'>
+        <div className='mx-[5%] lg:mx-[2%] py-8'>
             {/* Header */}
-            <div className="mb-8">
+            <div className="mb-4 md:mb-8">
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">
                     {getDisplayCategoryName(currentCategory.name)}
                 </h1>
@@ -265,11 +265,12 @@ useEffect(() => {
                 {/*    {pagination.totalItems > 0 ? `${pagination.totalItems} products available` : 'No products found'}*/}
                 {/*</p>*/}
 
-                {/* Category Navigation */}
-                <div className="flex flex-wrap gap-2 mb-4 mt-4">
+                {/*/!* Category Navigation *!/*/}
+
+                <div className="flex flex-nowrap gap-2 overflow-x-auto scrollbar-hide pb-2">
                     <button
                         onClick={() => handleCategoryChange({ name: 'all' })}
-                        className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                        className={`px-4  rounded-md text-sm font-medium transition-colors flex-shrink-0 min-w-fit ${
                             currentCategory.name === 'all'
                                 ? 'bg-pink-600 text-white'
                                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -281,13 +282,15 @@ useEffect(() => {
                         <button
                             key={cat.name}
                             onClick={() => handleCategoryChange(cat)}
-                            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
+                            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors flex-shrink-0 min-w-fit ${
                                 currentCategory.name === cat.name
                                     ? 'bg-pink-600 text-white'
                                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
                             }`}
                         >
-                            {getDisplayCategoryName(cat.name)}
+            <span className="text-center leading-tight">
+                {getDisplayCategoryName(cat.name)}
+            </span>
                         </button>
                     ))}
                 </div>
@@ -304,13 +307,13 @@ useEffect(() => {
             </div>
 
             {/* Search Bar and Controls */}
-            <div className='mb-6'>
+            <div className='lg:mb-6 mb-0'>
                 {/* Top Row: Sort, Search, and Filters */}
                 <div className="grid grid-cols-2 sm:flex sm:flex-row gap-4 items-stretch sm:items-center mb-4">
                     {/* Sort Dropdown - Left */}
                     <Menu as="div" className="relative inline-block text-left flex-shrink-0">
                         <div>
-                            <Menu.Button className="inline-flex justify-center gap-x-1.5 rounded-md bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 w-full sm:w-auto">
+                            <Menu.Button className="inline-flex justify-center gap-x-1.5 rounded-md bg-white px-2 py-2 md:px-4 md:py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 w-full sm:w-auto">
                                 Sort By
                                 <ChevronDownIcon className="-mr-1 h-5 w-5 text-gray-400" aria-hidden="true" />
                             </Menu.Button>
@@ -387,13 +390,13 @@ useEffect(() => {
                         </Transition>
                     </Menu>
 
-                    {/* Search Bar - Center */}
+
 
 
                     {/* Filters Toggle Button - Right */}
                     <button
                         onClick={() => setShowFilters(!showFilters)}
-                        className="inline-flex justify-center gap-x-1.5 rounded-md bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 w-full sm:w-auto"
+                        className="inline-flex justify-center gap-x-1.5 rounded-md bg-white px-2 py-2 md:px-4 md:py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 w-full sm:w-auto"
                     >
                         <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z" />
@@ -412,13 +415,15 @@ useEffect(() => {
                         )}
                         <ChevronDownIcon className={`-mr-1 h-5 w-5 text-gray-400 transition-transform ${showFilters ? 'rotate-180' : ''}`} aria-hidden="true" />
                     </button>
+
+                    {/* Search Bar - Center */}
                     <div className="relative flex-grow col-span-2">
                         <input
                             type='text'
                             placeholder='Search products by name, description, or category...'
                             value={localSearchTerm}
                             onChange={(e) => setLocalSearchTerm(e.target.value)}
-                            className='p-3 border border-gray-300 rounded-lg w-full focus:ring-2 focus:ring-pink-500 focus:border-transparent pl-10 pr-4'
+                            className='p-1 md:p-3 border border-gray-300 rounded-lg w-full focus:ring-2 focus:ring-pink-500 focus:border-transparent pl-10 pr-4'
                         />
                         <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -437,6 +442,7 @@ useEffect(() => {
                         )}
                     </div>
                 </div>
+
 
                 {/* Search Helper Text */}
                 {localSearchTerm && (
@@ -530,7 +536,7 @@ useEffect(() => {
 
             {/* Active Filters Display */}
             {hasActiveFilters && filters.category != "" && (
-                <div className="mb-4 p-3 bg-pink-50 rounded-lg">
+                <div className="lg:mb-4 p-3 bg-pink-50 rounded-lg">
                     <div className="flex items-center justify-between mb-2">
                         <p className="text-sm font-medium text-pink-800">Active Filters:</p>
                         <button
@@ -621,10 +627,10 @@ useEffect(() => {
             </div>
 
             {/* Products Grid */}
-            <div className='grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-8'>
+            <div className='grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-10 mb-8'>
                 {paginatedProducts.length > 0 ? (
                     paginatedProducts.map((product) => (
-                        <ProductCard key={product._id} product={product} />
+                        <ProductCard key={product._id} showRating={true} showTagline={true} product={product} />
                     ))
                 ) : (
                     <div className="col-span-full text-center py-12">
