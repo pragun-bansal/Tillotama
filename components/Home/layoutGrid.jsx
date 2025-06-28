@@ -33,9 +33,9 @@ export const LayoutGrid = ({
                         onMouseLeave={handleMouseLeave}
                         onClick={()=>handleClick(card)}
                         className={cn(card.className, "relative overflow-hidden h-[30vh]", selected?.id === card.id
-                            ? "rounded-lg cursor-pointer absolute w-[80vw] md:w-1/2 lg:h-1/2 lg:w-1/3 z-50 flex flex-wrap flex-col"
+                            ? "rounded-lg cursor-pointer absolute w-[80vw] md:w-1/2 lg:h-1/2 lg:w-1/3 z-19 flex flex-wrap flex-col"
                             : lastSelected?.id === card.id
-                                ? "z-40 bg-white rounded-xl h-full w-full"
+                                ? "z-18 bg-white rounded-xl h-full w-full"
                                 : "bg-white rounded-xl h-full w-full")}
                         layoutId={`card-${card.id}`}>
                         {selected?.id === card.id && <SelectedCard selected={selected} />}

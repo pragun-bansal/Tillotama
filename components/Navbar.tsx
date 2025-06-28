@@ -23,7 +23,7 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
     const [droppeddown2, setDroppeddown2] = useState<boolean>(false);
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
     const [navDropdown, setNavDropdown] = useState<boolean>(false);
-
+     const [searchTerm, setSearchTerm] = useState<string>('');
     const router = useRouter();
     const dispatch = useAppDispatch();
     const { data: user, token } = useAppSelector((state) => state.user);
@@ -118,6 +118,18 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
     const handleTestimonial = (): void => {
         console.log("check");
         router.push("/");
+    };
+    // Handle search functionality
+    const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (searchTerm.trim()) {
+            // Navigate to all products page with search term
+            router.push(`/allproducts/all/newArrivals?search=${encodeURIComponent(searchTerm.trim())}`);
+        }
+    };
+
+    const handleSearchInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchTerm(e.target.value);
     };
 
     const handleLogOut = (): void => {
@@ -257,7 +269,7 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                     : 'bg-transparent'
             }`}>
                 {/* Navigation Toggle & Search Section - Left Side */}
-                <div className="absolute md:mt-[3vh]" >
+                <div className="absolute left-0 lg:mt-[3vh]">
                 <div className="flex items-center space-x-3">
                     <button
                         onClick={() => setNavDropdown(!navDropdown)}
@@ -282,13 +294,12 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                         </svg>
                     </button>
 
-
-                    {/* Search Form */}
-                    <form className="hidden md:block w-64">
+                    {/* Updated Search Form with proper functionality */}
+                    <form className="hidden md:block w-64" onSubmit={handleSearch}>
                         <div className="relative">
                             <button
                                 type="submit"
-                                className="absolute inset-y-0 left-0 flex items-center pl-3"
+                                className="absolute inset-y-0 left-0 flex items-center pl-3 hover:bg-gray-100 rounded-l-lg transition-colors z-10"
                             >
                                 <svg
                                     className={`w-4 h-4 transition-colors duration-300 ${
@@ -308,20 +319,28 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                                     />
                                 </svg>
                             </button>
-                            <label htmlFor="default-search" className="mb-2 text-sm font-medium text-gray-900 sr-only">
+                            <label htmlFor="navbar-search" className="mb-2 text-sm font-medium text-gray-900 sr-only">
                                 Search
                             </label>
                             <input
                                 type="search"
-                                id="default-search"
+                                id="navbar-search"
+                                value={searchTerm}
+                                onChange={handleSearchInputChange}
                                 className={`w-full p-2 pl-10 text-sm border rounded-lg transition-all duration-300 ${
                                     isScrolled
                                         ? 'bg-gray-50 text-black placeholder-gray-500 border-gray-300'
                                         : 'bg-white/10 text-white placeholder-white/60 border-white/30 backdrop-blur-sm'
                                 }`}
                                 placeholder="Search products..."
-                                required
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                        e.preventDefault();
+                                        handleSearch(e as any);
+                                    }
+                                }}
                             />
+
                         </div>
                     </form>
                 </div>
@@ -348,7 +367,7 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                                 className="group flex items-center justify-between w-full py-2 pl-3 md:pr-4 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 md:w-auto"
                             >
                                 <Image
-                                    className={`h-[2.5vh] w-[2.5vh] md:w-10 md:h-10 rounded-full cursor-pointer ${isScrolled ? 'opacity-100' : 'opacity-30'}`}
+                                    className={`h-[2.5vh] w-[2.5vh] md:w-10 md:h-10 rounded-full cursor-pointer hover:opacity-55 ${isScrolled ? 'opacity-100' : 'opacity-30'}`}
                                     src={user?.pfp || '/default-avatar.png'}
                                     alt="Profile"
                                     width={40}
@@ -408,8 +427,8 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
 
                     <button onClick={() => router.push('/wishlist')}>
                         <svg
-                            className={`h-[4vh] lg:h-[5vh] translate-y-[2.5vh] p-2 transition-colors duration-300 ${
-                                isScrolled ? 'fill-pink' : 'fill-pink/20'
+                            className={`h-[4vh] lg:h-[5vh] translate-y-[2.5vh] p-2 transition-colors duration-300  ${
+                                isScrolled ? 'fill-pink hover:fill-pink-500 ' : 'fill-pink/20 hover:fill-pink-500/50 '
                             }`}
                             xmlns="http://www.w3.org/2000/svg"
                             height="1em"
@@ -421,7 +440,7 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
 
                     <button onClick={() => setShow(!show)}>
                         <Image
-                            className="h-[4vh] lg:h-[5vh] translate-y-[2.5vh] p-2"
+                            className="h-[4vh] lg:h-[5vh] translate-y-[2.5vh] p-2 "
                             src={CartSVG}
                             alt="cart"
                             width={40}

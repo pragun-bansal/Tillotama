@@ -29,6 +29,27 @@
 //     return classes.filter(Boolean).join(' ');
 // }
 //
+// // Helper function to encode category name for URL
+// const encodeCategoryForUrl = (categoryName) => {
+//     if (categoryName === 'all') return 'all';
+//     return encodeURIComponent(categoryName);
+// };
+//
+// // Helper function to decode category name from URL
+// const decodeCategoryFromUrl = (urlCategory) => {
+//     if (!urlCategory || urlCategory === 'all') return 'all';
+//     return decodeURIComponent(urlCategory);
+// };
+//
+// // Helper function to find matching category
+// const findMatchingCategory = (decodedCategory) => {
+//     if (decodedCategory === 'all') return { name: 'all' };
+//
+//     return Categories.find(cat =>
+//         cat.name.toLowerCase() === decodedCategory.toLowerCase()
+//     ) || { name: 'all' };
+// };
+//
 // const AllProductsPage = () => {
 //     const dispatch = useAppDispatch();
 //     const router = useRouter();
@@ -48,16 +69,16 @@
 //     const pagination = usePagination();
 //     const { filters, hasActiveFilters } = useProductFilters();
 //
-//     // URL params
-//     const category = params.category || 'all';
+//     // URL params with proper decoding
+//     const rawCategory = params.category || 'all';
+//     const decodedCategory = decodeCategoryFromUrl(rawCategory);
+//     const currentCategory = findMatchingCategory(decodedCategory);
 //     const sortBy = params.sortBy || '';
 //
 //     // Local state for immediate UI updates
 //     const [localSearchTerm, setLocalSearchTerm] = useState('');
 //     const [localPriceRange, setLocalPriceRange] = useState([0, 10000]);
 //     const [isInitialized, setIsInitialized] = useState(false);
-//     // Add this state to your component (at the top with other useState declarations)
-//
 //     const [showFilters, setShowFilters] = useState(false);
 //
 //     // Get max price from products
@@ -77,7 +98,7 @@
 //
 //                 // Set initial filters based on URL
 //                 const initialFilters = {
-//                     category: category !== 'all' ? category : '',
+//                     category: currentCategory.name !== 'all' ? currentCategory.name : '',
 //                     search: '',
 //                     priceRange: [0, maxPrice],
 //                     sortBy: getSortByValue(sortBy),
@@ -88,14 +109,16 @@
 //                 setLocalPriceRange([0, maxPrice]);
 //                 setIsInitialized(true);
 //
-//                 console.log('✅ Component initialized with filters:', initialFilters);
+//                 console.log('✅ Component initialized with category:', currentCategory.name);
+//                 console.log('✅ Decoded category:', decodedCategory);
+//                 console.log('✅ Initial filters:', initialFilters);
 //             } catch (error) {
 //                 console.error('❌ Failed to initialize component:', error);
 //             }
 //         };
 //
 //         initializeComponent();
-//     }, [dispatch, status, allProducts.length, category, sortBy, maxPrice]);
+//     }, [dispatch, status, allProducts.length, currentCategory.name, sortBy, maxPrice]);
 //
 //     // Update local price range when max price changes
 //     useEffect(() => {
@@ -156,13 +179,20 @@
 //         const sortOrder = getSortOrderValue(newSortBy);
 //
 //         dispatch(setFilters({ sortBy, sortOrder }));
-//         router.push(`/allproducts/${category}/${newSortBy}`);
+//
+//         // Use encoded category for URL
+//         const encodedCategory = encodeCategoryForUrl(currentCategory.name);
+//         router.push(`/allproducts/${encodedCategory}/${newSortBy}`);
 //     };
 //
 //     const handleCategoryChange = (newCategory) => {
 //         const categoryValue = newCategory.name === 'all' ? '' : newCategory.name;
 //         dispatch(setFilters({ category: categoryValue }));
-//         router.push(`/allproducts/${newCategory.name}/${sortBy || ''}`);
+//
+//         // Use encoded category for URL
+//         const encodedCategory = encodeCategoryForUrl(newCategory.name);
+//         const currentSort = sortBy || 'newArrivals';
+//         router.push(`/allproducts/${encodedCategory}/${currentSort}`);
 //     };
 //
 //     const handlePageChange = (pageNumber) => {
@@ -176,6 +206,14 @@
 //         setLocalSearchTerm('');
 //         setLocalPriceRange([0, maxPrice]);
 //         router.push('/allproducts/all/newArrivals');
+//     };
+//
+//     // Display helper function
+//     const getDisplayCategoryName = (categoryName) => {
+//         if (categoryName === 'all') return 'All Products';
+//         return categoryName.split(' ').map(word =>
+//             word.charAt(0).toUpperCase() + word.slice(1)
+//         ).join(' ');
 //     };
 //
 //     // Loading state
@@ -213,21 +251,18 @@
 //             {/* Header */}
 //             <div className="mb-8">
 //                 <h1 className="text-3xl font-bold text-gray-900 mb-4">
-//                     {category === 'all'
-//                         ? 'All Products'
-//                         : `${category.charAt(0).toUpperCase()}${category.slice(1)} Products`
-//                     }
+//                     {getDisplayCategoryName(currentCategory.name)}
 //                 </h1>
-//                 <p className="text-gray-600">
-//                     {pagination.totalItems > 0 ? `${pagination.totalItems} products available` : 'No products found'}
-//                 </p>
+//                 {/*<p className="text-gray-600">*/}
+//                 {/*    {pagination.totalItems > 0 ? `${pagination.totalItems} products available` : 'No products found'}*/}
+//                 {/*</p>*/}
 //
 //                 {/* Category Navigation */}
 //                 <div className="flex flex-wrap gap-2 mb-4 mt-4">
 //                     <button
 //                         onClick={() => handleCategoryChange({ name: 'all' })}
 //                         className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-//                             category === 'all'
+//                             currentCategory.name === 'all'
 //                                 ? 'bg-pink-600 text-white'
 //                                 : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
 //                         }`}
@@ -239,20 +274,31 @@
 //                             key={cat.name}
 //                             onClick={() => handleCategoryChange(cat)}
 //                             className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-//                                 category === cat.name
+//                                 currentCategory.name === cat.name
 //                                     ? 'bg-pink-600 text-white'
 //                                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
 //                             }`}
 //                         >
-//                             {cat.name.charAt(0).toUpperCase() + cat.name.slice(1)}
+//                             {getDisplayCategoryName(cat.name)}
 //                         </button>
 //                     ))}
 //                 </div>
+//
+//                 {/*/!* Debug info (remove in production) *!/*/}
+//                 {/*{process.env.NODE_ENV === 'development' && (*/}
+//                 {/*    <div className="text-xs text-gray-500 bg-gray-100 p-2 rounded mb-4">*/}
+//                 {/*        <p>Raw URL category: {rawCategory}</p>*/}
+//                 {/*        <p>Decoded category: {decodedCategory}</p>*/}
+//                 {/*        <p>Current category: {currentCategory.name}</p>*/}
+//                 {/*        <p>Filters category: {filters.category}</p>*/}
+//                 {/*    </div>*/}
+//                 {/*)}*/}
 //             </div>
+//
 //             {/* Search Bar and Controls */}
 //             <div className='mb-6'>
 //                 {/* Top Row: Sort, Search, and Filters */}
-//                 <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center mb-4">
+//                 <div className="grid grid-cols-2 sm:flex sm:flex-row gap-4 items-stretch sm:items-center mb-4">
 //                     {/* Sort Dropdown - Left */}
 //                     <Menu as="div" className="relative inline-block text-left flex-shrink-0">
 //                         <div>
@@ -334,7 +380,31 @@
 //                     </Menu>
 //
 //                     {/* Search Bar - Center */}
-//                     <div className="relative flex-grow">
+//
+//
+//                     {/* Filters Toggle Button - Right */}
+//                     <button
+//                         onClick={() => setShowFilters(!showFilters)}
+//                         className="inline-flex justify-center gap-x-1.5 rounded-md bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 w-full sm:w-auto"
+//                     >
+//                         <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+//                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z" />
+//                         </svg>
+//                         Filters
+//                         {hasActiveFilters && (
+//                             <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-pink-100 bg-pink-600 rounded-full ml-1">
+//                                 {[
+//                                     filters.search && 1,
+//                                     filters.category && 1,
+//                                     (filters.priceRange[0] > 0 || filters.priceRange[1] < maxPrice) && 1,
+//                                     filters.inStock && 1,
+//                                     filters.minRating > 0 && 1
+//                                 ].filter(Boolean).length}
+//                             </span>
+//                         )}
+//                         <ChevronDownIcon className={`-mr-1 h-5 w-5 text-gray-400 transition-transform ${showFilters ? 'rotate-180' : ''}`} aria-hidden="true" />
+//                     </button>
+//                     <div className="relative flex-grow col-span-2">
 //                         <input
 //                             type='text'
 //                             placeholder='Search products by name, description, or category...'
@@ -358,29 +428,6 @@
 //                             </button>
 //                         )}
 //                     </div>
-//
-//                     {/* Filters Toggle Button - Right */}
-//                     <button
-//                         onClick={() => setShowFilters(!showFilters)}
-//                         className="inline-flex justify-center gap-x-1.5 rounded-md bg-white px-4 py-3 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 w-full sm:w-auto"
-//                     >
-//                         <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-//                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.207A1 1 0 013 6.5V4z" />
-//                         </svg>
-//                         Filters
-//                         {hasActiveFilters && (
-//                             <span className="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-pink-100 bg-pink-600 rounded-full ml-1">
-//                     {[
-//                         filters.search && 1,
-//                         filters.category && 1,
-//                         (filters.priceRange[0] > 0 || filters.priceRange[1] < maxPrice) && 1,
-//                         filters.inStock && 1,
-//                         filters.minRating > 0 && 1
-//                     ].filter(Boolean).length}
-//                 </span>
-//                         )}
-//                         <ChevronDownIcon className={`-mr-1 h-5 w-5 text-gray-400 transition-transform ${showFilters ? 'rotate-180' : ''}`} aria-hidden="true" />
-//                     </button>
 //                 </div>
 //
 //                 {/* Search Helper Text */}
@@ -419,14 +466,14 @@
 //                             </div>
 //
 //                             {/* Stock and Rating Filters */}
-//                             <div className="space-y-4 grid grid-cols-2">
+//                             <div className="space-y-4 grid grid-cols-2 gap-4">
 //                                 {/* Rating Filter */}
 //                                 <div>
 //                                     <label className='block text-sm font-medium text-gray-700 mb-2'>
 //                                         Minimum Rating
 //                                     </label>
 //                                     <select
-//                                         value={filters.minRating}
+//                                         value={filters.minRating || 0}
 //                                         onChange={(e) => dispatch(setFilters({ minRating: parseInt(e.target.value) }))}
 //                                         className="block w-full rounded-md border-gray-300 shadow-sm focus:border-pink-500 focus:ring-pink-500 text-sm"
 //                                     >
@@ -438,24 +485,23 @@
 //                                         <option value={5}>5 Stars Only</option>
 //                                     </select>
 //                                 </div>
+//
 //                                 {/* Stock Filter */}
-//                                 <div>
+//                                 <div className="flex items-center pt-6">
 //                                     <label className="flex items-center text-sm">
 //                                         <input
 //                                             type="checkbox"
-//                                             checked={filters.inStock}
+//                                             checked={filters.inStock || false}
 //                                             onChange={(e) => dispatch(setFilters({ inStock: e.target.checked }))}
 //                                             className="rounded border-gray-300 text-pink-600 focus:ring-pink-500 mr-2"
 //                                         />
 //                                         <span className="text-gray-700">In Stock Only</span>
 //                                     </label>
 //                                 </div>
-//
-//
 //                             </div>
 //
 //                             {/* Action Buttons */}
-//                             <div className="flex flex-col gap-2 md:justify-end">
+//                             <div className="flex flex-col sm:flex-row gap-2 justify-end">
 //                                 <button
 //                                     onClick={handleClearFilters}
 //                                     className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 transition-colors"
@@ -475,7 +521,7 @@
 //             </div>
 //
 //             {/* Active Filters Display */}
-//             {hasActiveFilters && (
+//             {hasActiveFilters && filters.category != "" && (
 //                 <div className="mb-4 p-3 bg-pink-50 rounded-lg">
 //                     <div className="flex items-center justify-between mb-2">
 //                         <p className="text-sm font-medium text-pink-800">Active Filters:</p>
@@ -489,32 +535,32 @@
 //                     <div className="flex flex-wrap gap-2">
 //                         {filters.search && (
 //                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
-//                     Search: "{filters.search}"
-//                     <button
-//                         onClick={() => {
-//                             setLocalSearchTerm('');
-//                             dispatch(setFilters({ search: '' }));
-//                         }}
-//                         className="ml-1 text-pink-600 hover:text-pink-800"
-//                     >
-//                         ×
-//                     </button>
-//                 </span>
+//                                 Search: "{filters.search}"
+//                                 <button
+//                                     onClick={() => {
+//                                         setLocalSearchTerm('');
+//                                         dispatch(setFilters({ search: '' }));
+//                                     }}
+//                                     className="ml-1 text-pink-600 hover:text-pink-800"
+//                                 >
+//                                     ×
+//                                 </button>
+//                             </span>
 //                         )}
 //                         {filters.category && (
 //                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
-//                     Category: {filters.category}
+//                                 Category: {getDisplayCategoryName(filters.category)}
 //                                 <button
 //                                     onClick={() => dispatch(setFilters({ category: '' }))}
 //                                     className="ml-1 text-pink-600 hover:text-pink-800"
 //                                 >
-//                         ×
-//                     </button>
-//                 </span>
+//                                     ×
+//                                 </button>
+//                             </span>
 //                         )}
-//                         {(filters.priceRange[0] > 0 || filters.priceRange[1] < maxPrice) && (
+//                         {(filters.priceRange && (filters.priceRange[0] > 0 || filters.priceRange[1] < maxPrice)) && (
 //                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
-//                     Price: ₹{filters.priceRange[0]} - ₹{filters.priceRange[1]}
+//                                 Price: ₹{filters.priceRange[0]} - ₹{filters.priceRange[1]}
 //                                 <button
 //                                     onClick={() => {
 //                                         setLocalPriceRange([0, maxPrice]);
@@ -522,31 +568,31 @@
 //                                     }}
 //                                     className="ml-1 text-pink-600 hover:text-pink-800"
 //                                 >
-//                         ×
-//                     </button>
-//                 </span>
+//                                     ×
+//                                 </button>
+//                             </span>
 //                         )}
 //                         {filters.inStock && (
 //                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
-//                     In Stock Only
-//                     <button
-//                         onClick={() => dispatch(setFilters({ inStock: false }))}
-//                         className="ml-1 text-pink-600 hover:text-pink-800"
-//                     >
-//                         ×
-//                     </button>
-//                 </span>
+//                                 In Stock Only
+//                                 <button
+//                                     onClick={() => dispatch(setFilters({ inStock: false }))}
+//                                     className="ml-1 text-pink-600 hover:text-pink-800"
+//                                 >
+//                                     ×
+//                                 </button>
+//                             </span>
 //                         )}
 //                         {filters.minRating > 0 && (
 //                             <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
-//                     {filters.minRating}+ Stars
-//                     <button
-//                         onClick={() => dispatch(setFilters({ minRating: 0 }))}
-//                         className="ml-1 text-pink-600 hover:text-pink-800"
-//                     >
-//                         ×
-//                     </button>
-//                 </span>
+//                                 {filters.minRating}+ Stars
+//                                 <button
+//                                     onClick={() => dispatch(setFilters({ minRating: 0 }))}
+//                                     className="ml-1 text-pink-600 hover:text-pink-800"
+//                                 >
+//                                     ×
+//                                 </button>
+//                             </span>
 //                         )}
 //                     </div>
 //                 </div>
@@ -567,7 +613,7 @@
 //             </div>
 //
 //             {/* Products Grid */}
-//             <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-8'>
+//             <div className='grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-10 mb-8'>
 //                 {paginatedProducts.length > 0 ? (
 //                     paginatedProducts.map((product) => (
 //                         <ProductCard key={product._id} product={product} />
@@ -732,7 +778,7 @@
 // export default AllProductsPage;
 "use client";
 import React, { useState, useEffect, Fragment } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { Menu, Transition } from '@headlessui/react';
 import { ChevronDownIcon } from '@heroicons/react/20/solid';
 import Slider from 'rc-slider';
@@ -786,6 +832,7 @@ const AllProductsPage = () => {
     const dispatch = useAppDispatch();
     const router = useRouter();
     const params = useParams();
+    const searchParams = useSearchParams(); // Add this to get URL search parameters
 
     // Redux state with memoized selectors
     const {
@@ -806,6 +853,9 @@ const AllProductsPage = () => {
     const decodedCategory = decodeCategoryFromUrl(rawCategory);
     const currentCategory = findMatchingCategory(decodedCategory);
     const sortBy = params.sortBy || '';
+
+    // Get search parameter from URL
+    const searchParam = searchParams.get('search') || '';
 
     // Local state for immediate UI updates
     const [localSearchTerm, setLocalSearchTerm] = useState('');
@@ -828,21 +878,23 @@ const AllProductsPage = () => {
                     await dispatch(fetchAllProducts()).unwrap();
                 }
 
-                // Set initial filters based on URL
+                // Set initial filters based on URL and search params
                 const initialFilters = {
                     category: currentCategory.name !== 'all' ? currentCategory.name : '',
-                    search: '',
+                    search: searchParam, // Use search parameter from URL
                     priceRange: [0, maxPrice],
                     sortBy: getSortByValue(sortBy),
                     sortOrder: getSortOrderValue(sortBy),
                 };
 
                 dispatch(setFilters(initialFilters));
+                setLocalSearchTerm(searchParam); // Set local search term from URL
                 setLocalPriceRange([0, maxPrice]);
                 setIsInitialized(true);
 
                 console.log('✅ Component initialized with category:', currentCategory.name);
                 console.log('✅ Decoded category:', decodedCategory);
+                console.log('✅ Search param:', searchParam);
                 console.log('✅ Initial filters:', initialFilters);
             } catch (error) {
                 console.error('❌ Failed to initialize component:', error);
@@ -850,7 +902,12 @@ const AllProductsPage = () => {
         };
 
         initializeComponent();
-    }, [dispatch, status, allProducts.length, currentCategory.name, sortBy, maxPrice]);
+    }, [dispatch, status, allProducts.length, currentCategory.name, sortBy, maxPrice, searchParam]);
+
+    // Update local search term when URL search param changes
+    useEffect(() => {
+        setLocalSearchTerm(searchParam);
+    }, [searchParam]);
 
     // Update local price range when max price changes
     useEffect(() => {
@@ -912,19 +969,21 @@ const AllProductsPage = () => {
 
         dispatch(setFilters({ sortBy, sortOrder }));
 
-        // Use encoded category for URL
+        // Use encoded category for URL and preserve search parameter
         const encodedCategory = encodeCategoryForUrl(currentCategory.name);
-        router.push(`/allproducts/${encodedCategory}/${newSortBy}`);
+        const searchQuery = searchParam ? `?search=${encodeURIComponent(searchParam)}` : '';
+        router.push(`/allproducts/${encodedCategory}/${newSortBy}${searchQuery}`);
     };
 
     const handleCategoryChange = (newCategory) => {
         const categoryValue = newCategory.name === 'all' ? '' : newCategory.name;
         dispatch(setFilters({ category: categoryValue }));
 
-        // Use encoded category for URL
+        // Use encoded category for URL and preserve search parameter
         const encodedCategory = encodeCategoryForUrl(newCategory.name);
         const currentSort = sortBy || 'newArrivals';
-        router.push(`/allproducts/${encodedCategory}/${currentSort}`);
+        const searchQuery = searchParam ? `?search=${encodeURIComponent(searchParam)}` : '';
+        router.push(`/allproducts/${encodedCategory}/${currentSort}${searchQuery}`);
     };
 
     const handlePageChange = (pageNumber) => {
@@ -983,11 +1042,30 @@ const AllProductsPage = () => {
             {/* Header */}
             <div className="mb-8">
                 <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                    {getDisplayCategoryName(currentCategory.name)}
+                    {searchParam ?
+                        `Search Results for "${searchParam}"` :
+                        getDisplayCategoryName(currentCategory.name)
+                    }
                 </h1>
-                {/*<p className="text-gray-600">*/}
-                {/*    {pagination.totalItems > 0 ? `${pagination.totalItems} products available` : 'No products found'}*/}
-                {/*</p>*/}
+
+                {/* Show search context if there's a search term */}
+                {searchParam && (
+                    <div className="mb-4 p-3 bg-blue-50 rounded-lg">
+                        <p className="text-blue-800">
+                            Showing results for "<strong>{searchParam}</strong>"
+                            {currentCategory.name !== 'all' && ` in ${getDisplayCategoryName(currentCategory.name)}`}
+                        </p>
+                        <button
+                            onClick={() => {
+                                setLocalSearchTerm('');
+                                router.push(`/allproducts/${encodeCategoryForUrl(currentCategory.name)}/newArrivals`);
+                            }}
+                            className="text-blue-600 hover:text-blue-800 text-sm underline mt-1"
+                        >
+                            Clear search
+                        </button>
+                    </div>
+                )}
 
                 {/* Category Navigation */}
                 <div className="flex flex-wrap gap-2 mb-4 mt-4">
@@ -1015,16 +1093,6 @@ const AllProductsPage = () => {
                         </button>
                     ))}
                 </div>
-
-                {/*/!* Debug info (remove in production) *!/*/}
-                {/*{process.env.NODE_ENV === 'development' && (*/}
-                {/*    <div className="text-xs text-gray-500 bg-gray-100 p-2 rounded mb-4">*/}
-                {/*        <p>Raw URL category: {rawCategory}</p>*/}
-                {/*        <p>Decoded category: {decodedCategory}</p>*/}
-                {/*        <p>Current category: {currentCategory.name}</p>*/}
-                {/*        <p>Filters category: {filters.category}</p>*/}
-                {/*    </div>*/}
-                {/*)}*/}
             </div>
 
             {/* Search Bar and Controls */}
@@ -1110,9 +1178,6 @@ const AllProductsPage = () => {
                             </Menu.Items>
                         </Transition>
                     </Menu>
-
-                    {/* Search Bar - Center */}
-
 
                     {/* Filters Toggle Button - Right */}
                     <button
@@ -1272,31 +1337,6 @@ const AllProductsPage = () => {
                                     onClick={() => {
                                         setLocalSearchTerm('');
                                         dispatch(setFilters({ search: '' }));
-                                    }}
-                                    className="ml-1 text-pink-600 hover:text-pink-800"
-                                >
-                                    ×
-                                </button>
-                            </span>
-                        )}
-                        {filters.category && (
-                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
-                                Category: {getDisplayCategoryName(filters.category)}
-                                <button
-                                    onClick={() => dispatch(setFilters({ category: '' }))}
-                                    className="ml-1 text-pink-600 hover:text-pink-800"
-                                >
-                                    ×
-                                </button>
-                            </span>
-                        )}
-                        {(filters.priceRange && (filters.priceRange[0] > 0 || filters.priceRange[1] < maxPrice)) && (
-                            <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-pink-100 text-pink-800">
-                                Price: ₹{filters.priceRange[0]} - ₹{filters.priceRange[1]}
-                                <button
-                                    onClick={() => {
-                                        setLocalPriceRange([0, maxPrice]);
-                                        dispatch(setFilters({ priceRange: [0, maxPrice] }));
                                     }}
                                     className="ml-1 text-pink-600 hover:text-pink-800"
                                 >

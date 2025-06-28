@@ -1,23 +1,23 @@
-// app/api/reviews/delete/route.js - POST delete a review
+// app/api/reviews/update/[reviewId]/route.js - PUT update a review
 import Review from '@/lib/models/Review';
-import Product from '@/lib/models/Product';
 import User from '@/lib/models/User';
 import connectMongoDB from '@/lib/config/db';
 import jwt from 'jsonwebtoken';
 import { NextResponse } from 'next/server';
 
-export async function POST(request) {
+export async function PUT(request, { params }) {
     try {
         await connectMongoDB();
 
+        const { reviewId } = await params;
         const body = await request.json();
-        const { reviewId, productId, token } = body;
+        const { title, comment, rating, token } = body;
 
         // Validate required fields
-        if (!reviewId || !productId || !token) {
+        if (!reviewId || !title || !comment || !rating || !token) {
             return NextResponse.json(
                 {
-                    message: 'Review ID, product ID, and token are required'
+                    message: 'Review ID, title, comment, rating, and token are required'
                 },
                 { status: 400 }
             );
@@ -51,31 +51,45 @@ export async function POST(request) {
             );
         }
 
-        // Check if user owns the review or is admin
-        if (review.user.toString() !== user._id.toString() && !user.admin) {
+        // Check if user owns the review
+        if (review.user.toString() !== user._id.toString()) {
             return NextResponse.json(
                 {
-                    message: 'You can only delete your own reviews'
+                    message: 'You can only update your own reviews'
                 },
                 { status: 403 }
             );
         }
 
-        // Remove review from product's reviews array
-        await Product.findByIdAndUpdate(productId, {
-            $pull: { reviews: reviewId }
-        });
+        // Validate rating
+        const ratingNum = parseInt(rating);
+        if (ratingNum < 1 || ratingNum > 5) {
+            return NextResponse.json(
+                { message: 'Rating must be between 1 and 5' },
+                { status: 400 }
+            );
+        }
 
-        // Delete the review
-        await Review.findByIdAndDelete(reviewId);
+        // Update the review
+        const updatedReview = await Review.findByIdAndUpdate(
+            reviewId,
+            {
+                title: title.trim(),
+                comment: comment.trim(),
+                rating: ratingNum,
+                updatedAt: new Date()
+            },
+            { new: true }
+        ).populate('user', 'name pfp').lean();
 
         return NextResponse.json({
             success: true,
-            message: 'Review deleted successfully'
+            data: updatedReview,
+            message: 'Review updated successfully'
         });
 
     } catch (error) {
-        console.error('Error deleting review:', error);
+        console.error('Error updating review:', error);
 
         if (error.name === 'JsonWebTokenError') {
             return NextResponse.json(

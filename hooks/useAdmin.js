@@ -559,6 +559,24 @@ export const useAdminUsers = () => {
     };
 };
 
+export const useAdminState = () => {
+    return useAppSelector((state) => {
+        return {
+            // Users
+            users: state.admin.users,
+            filteredUsers: state.admin.filteredUsers,
+            userSearchTerm: state.admin.userSearchTerm,
+            usersLoading: state.admin.usersLoading,
+            usersError: state.admin.usersError,
+
+            // UI
+            activeTab: state.admin.activeTab,
+            sidebarOpen: state.admin.sidebarOpen,
+        };
+    });
+};
+
+
 // Hook for admin statistics (now uses allUsers for accurate stats)
 export const useAdminStats = () => {
     const { allUsers } = useAdminUsers();
