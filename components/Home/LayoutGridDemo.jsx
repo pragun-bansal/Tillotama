@@ -179,6 +179,8 @@ const categoryCards = Categories.map((category, index) => ({
             description={category.description}
         />
     ),
+    title: category.name,
+    description: category.description,
     className: index < 2 ? "md:col-span-1" : "col-span-1",
     thumbnail: category.imageUrl,
 }));

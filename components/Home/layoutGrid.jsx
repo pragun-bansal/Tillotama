@@ -2,13 +2,14 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import {useRouter} from "next/navigation"
 
 export const LayoutGrid = ({
                                cards
                            }) => {
     const [selected, setSelected] = useState(null);
     const [lastSelected, setLastSelected] = useState(null);
-
+    const router = useRouter();
     const handleMouseEnter = (card) => {
         setLastSelected(selected);
         setSelected(card);
@@ -20,25 +21,25 @@ export const LayoutGrid = ({
     };
 
     const handleClick = (card) => {
-        // redirectTo(`/allproducts/${card.title.toLocaleLowerCase()}/newArrivals`);
+        router.push(`/allproducts/${card.title.toLocaleLowerCase()}/newArrivals`);
     }
 
     return (
         (<div
-            className="w-full h-full p-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3  max-w-7xl mx-auto gap-4 relative">
+            className="w-full h-full p-10 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3  max-w-7xl mx-auto gap-4 relative">
             {cards.map((card, i) => (
                 <div key={i} className={cn(card.className, "h-[30vh] md:h-full")}>
                     <motion.div
                         onMouseEnter={() => handleMouseEnter(card)}
                         onMouseLeave={handleMouseLeave}
-                        onClick={()=>handleClick(card)}
+
                         className={cn(card.className, "relative overflow-hidden h-[30vh]", selected?.id === card.id
                             ? "rounded-lg cursor-pointer absolute w-[80vw] md:w-1/2 lg:h-1/2 lg:w-1/3 z-19 flex flex-wrap flex-col"
                             : lastSelected?.id === card.id
                                 ? "z-18 bg-white rounded-xl h-full w-full"
                                 : "bg-white rounded-xl h-full w-full")}
                         layoutId={`card-${card.id}`}>
-                        {selected?.id === card.id && <SelectedCard selected={selected} />}
+                        {selected?.id === card.id && <SelectedCard handleClick={handleClick} selected={selected} />}
                         <ImageComponent card={card} />
                     </motion.div>
                 </div>
@@ -47,7 +48,7 @@ export const LayoutGrid = ({
                 onMouseOut={handleMouseLeave}
                 onClick={handleMouseLeave}
                 className={cn(
-                    "absolute h-full w-full left-0 top-0 bg-black opacity-0 z-10",
+                    "absolute h-full w-full left-0 top-0 bg-black/30 opacity-0 z-10",
                     selected?.id ? "pointer-events-auto" : "pointer-events-none"
                 )}
                 animate={{ opacity: selected?.id ? 0.3 : 0 }} />
@@ -72,11 +73,11 @@ const ImageComponent = ({
 };
 
 const SelectedCard = ({
-                          selected
+                          handleClick,selected
                       }) => {
     return (
         (<div
-            className="bg-transparent h-full w-full flex flex-col justify-end rounded-lg shadow-2xl relative z-[60]">
+            className="bg-transparent h-full w-full flex flex-col justify-end rounded-lg shadow-2xl relative z-[60]" onClick={()=>{console.log(selected) ;handleClick(selected); }}>
             <motion.div
                 initial={{
                     opacity: 0,

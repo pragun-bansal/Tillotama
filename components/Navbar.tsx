@@ -357,17 +357,17 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                 </Link>
 
                 {/* User Actions - Right Side */}
-                <div className="absolute right-0 lg:mt-[2.5vh]">
+                <div className="absolute right-0 lg:mt-[2.5vh] translate-y-[3vh] lg:translate-y-0">
                 <div className="flex items-center space-x-0 md:space-x-2">
                     {token ? (
-                        <div className="mb-4 lg:mb-0 md:mr-1 h-[4vh] lg:h-[5vh] translate-y-[3vh] p-0 ">
+                        <div className="mb-4 lg:mb-0 lg:mr-1 h-[4vh] lg:h-[5vh] translate-y-[3vh] md:translate-y-[4vh] lg:translate-y-[3vh] p-0 ">
                             <button
                                 onMouseOver={() => setDropdown2(true)}
                                 onMouseOut={() => setDropdown2(false)}
                                 className="group flex items-center justify-between w-full py-2 pl-3 md:pr-4 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 md:w-auto"
                             >
                                 <Image
-                                    className={`h-[2.5vh] w-[2.5vh] md:w-10 md:h-10 rounded-full cursor-pointer hover:opacity-55 ${isScrolled ? 'opacity-100' : 'opacity-30'}`}
+                                    className={`h-[2.5vh] w-[2.5vh] lg:w-10 lg:h-10 rounded-full cursor-pointer hover:opacity-55 ${isScrolled ? 'opacity-100' : 'opacity-30'}`}
                                     src={user?.pfp || '/default-avatar.png'}
                                     alt="Profile"
                                     width={40}
@@ -386,7 +386,7 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                                 onMouseOut={() => setDroppeddown2(false)}
                                 className={`${
                                     dropdown2 || droppeddown2
-                                        ? 'absolute translate-x-[-10px] translate-y-[-10px] bg-white z-10 font-normal divide-y divide-gray-100 shadow-md w-44'
+                                        ? 'absolute translate-x-[-10px] translate-y-[-10px]  z-10 font-normal divide-y bg-white divide-gray-100 shadow-md w-44'
                                         : 'hidden'
                                 }`}
                             >
@@ -500,14 +500,14 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                 }`}>
                     <nav className="border-gray-200">
                         <div className="md:p-2">
-                            <div className="hidden w-full md:block md:w-auto" id="navbar-dropdown">
-                                <ul className="flex flex-row font-medium text-center p-4 md:p-0 mt-4 border border-gray-100 rounded-lg md:flex-row md:space-x-8 md:mt-0 md:border-0 items-center justify-between">
+                            <div className=" w-full md:w-auto" id="navbar-dropdown">
+                                <ul className="flex font-normal text-[10px] md:text-[15px] md:font-medium text-center  p-0 border-gray-100 rounded-lg flex-row md:space-x-8 mt-0 border-0 items-center justify-between">
                                     {/* Left Side Navigation */}
                                     <div className="flex space-x-8 justify-center items-center mx-auto">
                                         <li>
                                             <Link
                                                 href="/"
-                                                className="group block py-2 pr-4 bg-blue-700 rounded md:bg-transparent md:p-0"
+                                                className="group block py-2 pr-4  rounded md:bg-transparent md:p-0"
                                             >
                                                 Home
                                                 <span className="block max-w-0 lg:ml-[25%] lg:mr-[25%] group-hover:max-w-full transition-all duration-500 h-0.5 bg-white" />
@@ -518,7 +518,7 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                                             <button
                                                 onMouseOver={() => setDropdown(true)}
                                                 onMouseOut={() => setDropdown(false)}
-                                                className="group flex items-center justify-between w-full py-2 pl-3 pr-4 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0 md:w-auto"
+                                                className="group flex items-center justify-between w-full py-2 pl-3 pr-4 rounded  md:hover:bg-transparent md:border-0 md:p-0 md:w-auto"
                                             >
                                                 Products
                                                 <span
@@ -564,7 +564,7 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                                         <li>
                                             <Link
                                                 href="/about"
-                                                className="group block py-2 rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0"
+                                                className="group block py-2 rounded  md:hover:bg-transparent md:border-0 md:p-0"
                                             >
                                                 About Us
                                                 <span className="block max-w-0 lg:ml-[20%] lg:mr-[20%] group-hover:max-w-full transition-all duration-500 h-0.5 bg-white" />
@@ -576,7 +576,7 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                                         <li>
                                             <button
                                                 onClick={handleTestimonial}
-                                                className="block group rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0"
+                                                className="block group rounded  md:hover:bg-transparent md:border-0 md:p-0"
                                             >
                                                 Testimonials
                                                 <span className="block max-w-0 lg:ml-[20%] lg:mr-[20%] group-hover:max-w-full transition-all duration-500 h-0.5 bg-white" />
@@ -587,7 +587,7 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                                             <li>
                                                 <button
                                                     onClick={() => router.push('/admin')}
-                                                    className="block group rounded hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:p-0"
+                                                    className="block group rounded  md:hover:bg-transparent md:border-0 md:p-0"
                                                 >
                                                     Admin
                                                     <span className="block max-w-0 lg:ml-[20%] lg:mr-[20%] group-hover:max-w-full transition-all duration-500 h-0.5 bg-white" />
@@ -597,7 +597,7 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                                     </div>
 
                                     {/* Right Side Social Media */}
-                                    <div className="absolute right-0" >
+                                    <div className="hidden md:block absolute right-0" >
                                     <div className="flex items-center">
                                         <ul className="flex">
                                             <li>

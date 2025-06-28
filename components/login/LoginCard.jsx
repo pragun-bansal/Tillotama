@@ -748,7 +748,7 @@ const LoginCard = () => {
                 <div className="container h-full px-6 py-24">
                     <div className="g-6 flex h-full flex-wrap items-center justify-center lg:justify-between">
                         {/* Left column container with background */}
-                        <div className="mb-12 md:mb-0 md:w-8/12 lg:w-6/12">
+                        <div className="mb-12 md:mb-0 mx-auto w-1/2 md:w-8/12 lg:w-6/12">
                             <Image
                                 src={LoginSVG}
                                 className="w-full"
@@ -760,7 +760,7 @@ const LoginCard = () => {
                         {/* Right column container with form */}
                         <div className="md:w-8/12 lg:ml-6 lg:w-5/12">
                             <div className='mb-4'>
-                                <p tabIndex="0" className="focus:outline-none text-2xl font-extrabold leading-6 text-gray-800">
+                                <p tabIndex="0" className="focus:outline-none text-2xl text-center font-extrabold leading-6 text-gray-800">
                                     {isAuthenticated ? `Welcome back, ${user?.name || user?.username}!` : "Login to your account"}
                                 </p>
                                 {!isAuthenticated && (
@@ -948,7 +948,7 @@ const LoginCard = () => {
                                     type="submit"
                                     onClick={handleSubmit}
                                     disabled={isSubmitting || isLoading}
-                                    className={`inline-block w-full rounded bg-primary px-7 pb-2.5 pt-3 text-sm font-medium uppercase leading-normal text-black shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] ${
+                                    className={`inline-block w-full rounded px-7 pb-2.5 pt-3 text-sm font-medium uppercase leading-normal text-black shadow-[0_4px_9px_-4px_#3b71ca] transition duration-150 bg-lightpink ease-in-out hover:bg-primary-600 hover:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:bg-primary-600 focus:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] focus:outline-none focus:ring-0 active:bg-primary-700 active:shadow-[0_8px_9px_-4px_rgba(59,113,202,0.3),0_4px_18px_0_rgba(59,113,202,0.2)] ${
                                         (isSubmitting || isLoading) ? 'opacity-50 cursor-not-allowed' : ''
                                     }`}
                                 >
