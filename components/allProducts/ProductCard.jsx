@@ -104,9 +104,8 @@ const ProductCard = ({ product,showTagline=false ,showRating=false,onQuickView }
                 await dispatch(removeFromWishlist(product._id)).unwrap();
                 console.log('Removed from wishlist:', product._id);
                 toast.success("Removed From wishlist!", {
-                    position: "top-center",
+                    position: "top-right",
                     autoClose: 2000,
-                    theme: "dark",
                 });
             } else {
                 await dispatch(addToWishlist({
@@ -115,18 +114,16 @@ const ProductCard = ({ product,showTagline=false ,showRating=false,onQuickView }
                 })).unwrap();
                 console.log('Added to wishlist:', product._id);
                 toast.success("Added to wishlist!", {
-                    position: "top-center",
+                    position: "top-right",
                     autoClose: 2000,
-                    theme: "dark",
                 });
             }
         } catch (error) {
             console.error('Error updating wishlist:', error);
             alert("Failed to update wishlist. Please try again.");
             toast.error("Failed to add to wishlist", {
-                position: "top-center",
+                position: "top-right",
                 autoClose: 2000,
-                theme: "dark",
             });
         } finally {
             setIsAddingToWishlist(false);

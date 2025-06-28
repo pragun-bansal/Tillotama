@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useRef } from 'react';
 import Image from 'next/image';
+import WatchAndShop from "../../components/WatchAndShop";
 
 const AboutPage = () => {
     // Animation hook for scroll-triggered animations
@@ -320,6 +321,7 @@ const AboutPage = () => {
                     </div>
                 </div>
             </section>
+            <WatchAndShop />
 
             {/* CTA Section */}
             <section className="py-16 md:py-20 bg-gradient-to-r from-pink to-lightpink relative overflow-hidden">
@@ -341,6 +343,7 @@ const AboutPage = () => {
                     </div>
                 </div>
             </section>
+
         </main>
     );
 };
