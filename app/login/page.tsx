@@ -10,7 +10,7 @@
 // }
 //
 // export default LoginHome
-// File: app/login/page.tsx
+// File: app/login/page.jsx
 'use client';
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';

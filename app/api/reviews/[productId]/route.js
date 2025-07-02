@@ -1,4 +1,4 @@
-// app/api/reviews/[productId]/route.js - GET reviews for a product
+// app/api/reviews/[productId]/page.jsx - GET reviews for a product
 import Review from '@/lib/models/Review';
 import Product from '@/lib/models/Product';
 import User from '@/lib/models/User';

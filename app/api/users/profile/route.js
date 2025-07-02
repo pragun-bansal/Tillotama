@@ -1,4 +1,4 @@
-// app/api/users/profile/route.js
+// app/api/users/profile/page.jsx
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '../../../../lib/config/db';
 import User from '../../../../lib/models/User';

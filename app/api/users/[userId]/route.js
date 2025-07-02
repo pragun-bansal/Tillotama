@@ -1,4 +1,4 @@
-// app/api/users/[userId]/route.js (for DELETE)
+// app/api/users/[userId]/page.jsx (for DELETE)
     import { NextResponse } from 'next/server';
 import connectMongoDB from '@/lib/config/db';
 import User from '@/lib/models/User';

@@ -1,3 +1,4 @@
+// app/testimonials/page.jsx
 "use client";
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -117,7 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
 
     const handleTestimonial = (): void => {
         console.log("check");
-        router.push("/");
+        router.push("/testimonials");
     };
     // Handle search functionality
     const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {

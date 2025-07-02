@@ -16,7 +16,7 @@
 //           <li className="mb-2 tracking-[-.01em]">
 //             Get started by editing{" "}
 //             <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-//               app/page.tsx
+//               app/page.jsx
 //             </code>
 //             .
 //           </li>
@@ -112,6 +112,7 @@ import {HeroScrollDemo} from "@/components/Home/HeroScrollDemo";
 import HeroSlideshow from "@/components/Home/HeroSlideShow";
 import {LayoutGridDemo} from "@/components/Home/LayoutGridDemo";
 import {MarqueeDemo} from "@/components/Home/MarqueeDemo";
+import WatchAndShop from "@/components/WatchAndShop";
 
 export default function HomePage() {
   const [showCart, setShowCart] = useState(false);
@@ -123,6 +124,7 @@ export default function HomePage() {
         <ShuffleHero />
           <LayoutGridDemo />
           <MarqueeDemo />
+          <WatchAndShop />
           {/*<HeroScrollDemo />*/}
 
       </main>

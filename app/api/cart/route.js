@@ -1,4 +1,4 @@
-//app/api/cart/route.js
+//app/api/cart/page.jsx
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '../../../lib/config/db';
 import Cart from '../../../lib/models/Cart';

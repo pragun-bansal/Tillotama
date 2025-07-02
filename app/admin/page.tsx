@@ -10,6 +10,7 @@ import AdminLayout from '@/components/admin/AdminLayout';
 import AdminDashboard from '@/components/admin/AdminDashboard';
 import AdminProducts from '@/components/admin/AdminProducts';
 import AdminUsers from '@/components/admin/AdminUsers';
+import AdminTestimonials from '@/components/admin/AdminTestimonials';
 
 const AdminPage = () => {
     const router = useRouter();
@@ -72,6 +73,8 @@ const AdminPage = () => {
                 );
             case 'users':
                 return <AdminUsers />;
+            case 'testimonials':
+                return <AdminTestimonials />;
             default:
                 return <AdminDashboard />;
         }

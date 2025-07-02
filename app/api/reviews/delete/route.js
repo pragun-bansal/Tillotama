@@ -1,4 +1,4 @@
-// app/api/reviews/delete/route.js - POST delete a review
+// app/api/reviews/delete/page.jsx - POST delete a review
 import Review from '@/lib/models/Review';
 import Product from '@/lib/models/Product';
 import User from '@/lib/models/User';

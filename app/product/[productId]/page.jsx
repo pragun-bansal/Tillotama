@@ -1,4 +1,4 @@
-// // File: app/product/[productId]/page.tsx
+// // File: app/product/[productId]/page.jsx
 // "use client";
 // import React, { useEffect, useState } from 'react';
 // import { useParams } from 'next/navigation';

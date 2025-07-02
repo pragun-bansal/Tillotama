@@ -323,9 +323,9 @@ const WatchAndShop = ({ reels = [], title = "Watch and Shop" }) => {
                     <h2 className="text-3xl md:text-4xl font-bold text-gray-900">
                         {title}
                     </h2>
-                    <p className="text-gray-600 mt-2">
-                        Videos play automatically • Auto-scrolls every 5 seconds • Hover to pause
-                    </p>
+                    {/*<p className="text-gray-600 mt-2">*/}
+                    {/*    Videos play automatically • Auto-scrolls every 5 seconds • Hover to pause*/}
+                    {/*</p>*/}
                 </div>
 
                 {/* Carousel Container */}

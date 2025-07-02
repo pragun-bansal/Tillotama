@@ -1,4 +1,4 @@
-// app/api/reviews/stats/[productId]/route.js - GET review statistics for a product
+// app/api/reviews/stats/[productId]/page.jsx - GET review statistics for a product
 import Review from '@/lib/models/Review';
 import connectMongoDB from '@/lib/config/db';
 import { NextResponse } from 'next/server';

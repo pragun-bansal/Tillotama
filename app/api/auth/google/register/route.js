@@ -1,4 +1,4 @@
-//app/api/auth/google/register/route.js
+//app/api/auth/google/register/page.jsx
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '../../../../../lib/config/db';
 import User from '../../../../../lib/models/User';

@@ -1,4 +1,4 @@
-// app/api/reviews/update/[reviewId]/route.js - PUT update a review
+// app/api/reviews/update/[reviewId]/page.jsx - PUT update a review
 import Review from '@/lib/models/Review';
 import User from '@/lib/models/User';
 import connectMongoDB from '@/lib/config/db';

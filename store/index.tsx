@@ -1,30 +1,55 @@
-// // // // // store/index.js
+// // // // // // store/index.js
+// // // // // import { configureStore } from '@reduxjs/toolkit';
+// // // // // import { createWrapper } from 'next-redux-wrapper';
+// // // // // import userSlice from './slices/userSlice';
+// // // // // import cartSlice from './slices/cartSlice';
+// // // // // import wishlistSlice from './slices/wishlistSlice';
+// // // // // import allProductSlice from './slices/allProductSlice';
+// // // // //
+// // // // // const makeStore = () =>
+// // // // //     configureStore({
+// // // // //         reducer: {
+// // // // //             user: userSlice,
+// // // // //             cart: cartSlice,
+// // // // //             wishlist: wishlistSlice,
+// // // // //             allproducts: allProductSlice,
+// // // // //         },
+// // // // //         middleware: (getDefaultMiddleware) =>
+// // // // //             getDefaultMiddleware({
+// // // // //                 serializableCheck: {
+// // // // //                     ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+// // // // //                 },
+// // // // //             }),
+// // // // //         devTools: process.env.NODE_ENV !== 'production',
+// // // // //     });
+// // // // //
+// // // // // export const wrapper = createWrapper(makeStore, { debug: process.env.NODE_ENV !== 'production' });
+// // // //
 // // // // import { configureStore } from '@reduxjs/toolkit';
-// // // // import { createWrapper } from 'next-redux-wrapper';
 // // // // import userSlice from './slices/userSlice';
 // // // // import cartSlice from './slices/cartSlice';
 // // // // import wishlistSlice from './slices/wishlistSlice';
 // // // // import allProductSlice from './slices/allProductSlice';
 // // // //
-// // // // const makeStore = () =>
-// // // //     configureStore({
-// // // //         reducer: {
-// // // //             user: userSlice,
-// // // //             cart: cartSlice,
-// // // //             wishlist: wishlistSlice,
-// // // //             allproducts: allProductSlice,
-// // // //         },
-// // // //         middleware: (getDefaultMiddleware) =>
-// // // //             getDefaultMiddleware({
-// // // //                 serializableCheck: {
-// // // //                     ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
-// // // //                 },
-// // // //             }),
-// // // //         devTools: process.env.NODE_ENV !== 'production',
-// // // //     });
+// // // // export const store = configureStore({
+// // // //     reducer: {
+// // // //         user: userSlice,
+// // // //         cart: cartSlice,
+// // // //         wishlist: wishlistSlice,
+// // // //         allProducts: allProductSlice,
+// // // //     },
+// // // //     middleware: (getDefaultMiddleware) =>
+// // // //         getDefaultMiddleware({
+// // // //             serializableCheck: {
+// // // //                 ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+// // // //             },
+// // // //         }),
+// // // //     devTools: process.env.NODE_ENV !== 'production',
+// // // // });
 // // // //
-// // // // export const wrapper = createWrapper(makeStore, { debug: process.env.NODE_ENV !== 'production' });
-// // //
+// // // // export type RootState = ReturnType<typeof store.getState>;
+// // // // export type AppDispatch = typeof store.dispatch;
+// // // // store/index.tsx
 // // // import { configureStore } from '@reduxjs/toolkit';
 // // // import userSlice from './slices/userSlice';
 // // // import cartSlice from './slices/cartSlice';
@@ -41,7 +66,13 @@
 // // //     middleware: (getDefaultMiddleware) =>
 // // //         getDefaultMiddleware({
 // // //             serializableCheck: {
-// // //                 ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
+// // //                 ignoredActions: [
+// // //                     'persist/PERSIST',
+// // //                     'persist/REHYDRATE',
+// // //                     // Add any custom actions that might have non-serializable payloads
+// // //                 ],
+// // //                 ignoredActionsPaths: ['meta.arg', 'payload.timestamp'],
+// // //                 ignoredPaths: ['items.dates'],
 // // //             },
 // // //         }),
 // // //     devTools: process.env.NODE_ENV !== 'production',
@@ -49,12 +80,81 @@
 // // //
 // // // export type RootState = ReturnType<typeof store.getState>;
 // // // export type AppDispatch = typeof store.dispatch;
-// // // store/index.tsx
+// // //
+// // // // Export action creators for easy access
+// // // export {
+// // //     loginUser,
+// // //     registerUser,
+// // //     logoutUser,
+// // //     fetchUserData,
+// // //     updateUserProfile,
+// // //     uploadProfilePicture,
+// // //     loadFromStorage,
+// // //     clearError as clearUserError,
+// // // } from './slices/userSlice';
+// // //
+// // // export {
+// // //     fetchCartData,
+// // //     addToCart,
+// // //     removeFromCart,
+// // //     updateCartItemQuantity,
+// // //     clearCart,
+// // //     increaseItemQuantity,
+// // //     decreaseItemQuantity,
+// // //     removeItemCompletelyFromCart,
+// // //     clearError as clearCartError,
+// // // } from './slices/cartSlice';
+// // //
+// // // export {
+// // //     fetchWishlistData,
+// // //     addToWishlist,
+// // //     removeFromWishlist,
+// // //     toggleWishlistItem,
+// // //     clearWishlist,
+// // //     clearError as clearWishlistError,
+// // // } from './slices/wishlistSlice';
+// // //
+// // // export {
+// // //     fetchAllProducts,
+// // //     fetchProductById,
+// // //     createProduct,
+// // //     updateProduct,
+// // //     searchProducts,
+// // //     setFilters,
+// // //     clearFilters,
+// // //     setCurrentProduct,
+// // //     clearCurrentProduct,
+// // //     clearError as clearProductsError,
+// // // } from './slices/allProductSlice';
+// // //
+// // // // Export selectors
+// // // export {
+// // //     selectWishlistItems,
+// // //     selectWishlistItemById,
+// // //     selectIsInWishlist,
+// // //     selectWishlistLoading,
+// // //     selectWishlistError,
+// // //     selectWishlistTotalItems,
+// // // } from './slices/wishlistSlice';
+// // //
+// // // export {
+// // //     selectAllProducts,
+// // //     selectFilteredProducts,
+// // //     selectCurrentProduct,
+// // //     selectProductsLoading,
+// // //     selectProductsError,
+// // //     selectProductsStatus,
+// // //     selectProductFilters,
+// // //     selectProductCategories,
+// // //     selectProductById,
+// // // } from './slices/allProductSlice';
+// // // store/index.tsx - Updated version
 // // import { configureStore } from '@reduxjs/toolkit';
 // // import userSlice from './slices/userSlice';
 // // import cartSlice from './slices/cartSlice';
 // // import wishlistSlice from './slices/wishlistSlice';
 // // import allProductSlice from './slices/allProductSlice';
+// // import adminSlice from './slices/adminSlice'; // Add this import
 // //
 // // export const store = configureStore({
 // //     reducer: {
@@ -62,6 +162,7 @@
 // //         cart: cartSlice,
 // //         wishlist: wishlistSlice,
 // //         allProducts: allProductSlice,
+// //         admin: adminSlice, // Add this line
 // //     },
 // //     middleware: (getDefaultMiddleware) =>
 // //         getDefaultMiddleware({
@@ -119,6 +220,7 @@
 // //     fetchProductById,
 // //     createProduct,
 // //     updateProduct,
+// //     deleteProduct,
 // //     searchProducts,
 // //     setFilters,
 // //     clearFilters,
@@ -126,6 +228,19 @@
 // //     clearCurrentProduct,
 // //     clearError as clearProductsError,
 // // } from './slices/allProductSlice';
+// //
+// // // Export admin actions
+// // export {
+// //     fetchAllUsers,
+// //     deleteUser,
+// //     toggleUserAdmin,
+// //     setActiveTab,
+// //     setSidebarOpen,
+// //     setUserSearchTerm,
+// //     clearUsersError,
+// //     updateUserInList,
+// //     removeUserFromList,
+// // } from './slices/adminSlice';
 // //
 // // // Export selectors
 // // export {
@@ -148,13 +263,25 @@
 // //     selectProductCategories,
 // //     selectProductById,
 // // } from './slices/allProductSlice';
-// // store/index.tsx - Updated version
+// //
+// // // Export admin selectors
+// // export {
+// //     selectUsers,
+// //     selectFilteredUsers,
+// //     selectUserSearchTerm,
+// //     selectUsersLoading,
+// //     selectUsersError,
+// //     selectActiveTab,
+// //     selectSidebarOpen,
+// // } from './slices/adminSlice';
+// // store/index.tsx - Updated version with review slice
 // import { configureStore } from '@reduxjs/toolkit';
 // import userSlice from './slices/userSlice';
 // import cartSlice from './slices/cartSlice';
 // import wishlistSlice from './slices/wishlistSlice';
 // import allProductSlice from './slices/allProductSlice';
-// import adminSlice from './slices/adminSlice'; // Add this import
+// import adminSlice from './slices/adminSlice';
+// import reviewSlice from './slices/reviewSlice'; // Add this import
 //
 // export const store = configureStore({
 //     reducer: {
@@ -162,7 +289,8 @@
 //         cart: cartSlice,
 //         wishlist: wishlistSlice,
 //         allProducts: allProductSlice,
-//         admin: adminSlice, // Add this line
+//         admin: adminSlice,
+//         reviews: reviewSlice, // Add this line
 //     },
 //     middleware: (getDefaultMiddleware) =>
 //         getDefaultMiddleware({
@@ -242,6 +370,24 @@
 //     removeUserFromList,
 // } from './slices/adminSlice';
 //
+// // Export review actions
+// export {
+//     fetchProductReviews,
+//     addReview,
+//     updateReview,
+//     deleteReview,
+//     setShowWriteReview,
+//     setEditingReview,
+//     setShowDeleteConfirm,
+//     setReviewToDelete,
+//     updateReviewForm,
+//     resetReviewForm,
+//     setCurrentProductId,
+//     clearError as clearReviewsError,
+//     clearReviewsCache,
+//     removeProductReviews,
+// } from './slices/reviewSlice';
+//
 // // Export selectors
 // export {
 //     selectWishlistItems,
@@ -274,14 +420,35 @@
 //     selectActiveTab,
 //     selectSidebarOpen,
 // } from './slices/adminSlice';
-// store/index.tsx - Updated version with review slice
+//
+// // Export review selectors
+// export {
+//     selectCurrentProductReviews,
+//     selectReviewStats,
+//     selectReviewsLoading,
+//     selectReviewsError,
+//     selectShowWriteReview,
+//     selectEditingReview,
+//     selectReviewForm,
+//     selectShowDeleteConfirm,
+//     selectReviewToDelete,
+//     selectAddingReview,
+//     selectUpdatingReview,
+//     selectDeletingReview,
+//     selectCanUserReview,
+//     selectReviewsByRating,
+//     selectUserReviews,
+//     selectRatingPercentages,
+// } from './slices/reviewSlice';
+// store/index.tsx - Updated version with testimonial slice
 import { configureStore } from '@reduxjs/toolkit';
 import userSlice from './slices/userSlice';
 import cartSlice from './slices/cartSlice';
 import wishlistSlice from './slices/wishlistSlice';
 import allProductSlice from './slices/allProductSlice';
 import adminSlice from './slices/adminSlice';
-import reviewSlice from './slices/reviewSlice'; // Add this import
+import reviewSlice from './slices/reviewSlice';
+import testimonialSlice from './slices/testimonialSlice'; // Add this import
 
 export const store = configureStore({
     reducer: {
@@ -290,7 +457,8 @@ export const store = configureStore({
         wishlist: wishlistSlice,
         allProducts: allProductSlice,
         admin: adminSlice,
-        reviews: reviewSlice, // Add this line
+        reviews: reviewSlice,
+        testimonials: testimonialSlice, // Add this line
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
@@ -388,6 +556,25 @@ export {
     removeProductReviews,
 } from './slices/reviewSlice';
 
+// Export testimonial actions
+export {
+    fetchPublicTestimonials,
+    fetchUserTestimonials,
+    createTestimonial,
+    updateTestimonial,
+    deleteTestimonial,
+    setShowForm,
+    setIsEditing,
+    setCurrentTestimonial,
+    updateForm,
+    setFormPhoto,
+    resetForm,
+    setCurrentPage,
+    clearError as clearTestimonialError,
+    clearPublicError as clearPublicTestimonialError,
+    clearUserError as clearUserTestimonialError,
+} from './slices/testimonialSlice';
+
 // Export selectors
 export {
     selectWishlistItems,
@@ -440,3 +627,27 @@ export {
     selectUserReviews,
     selectRatingPercentages,
 } from './slices/reviewSlice';
+
+// Export testimonial selectors
+export {
+    selectPublicTestimonials,
+    selectFeaturedTestimonials,
+    selectUserTestimonials,
+    selectCurrentTestimonial,
+    selectTestimonialForm,
+    selectTestimonialLoading,
+    selectPublicLoading,
+    selectUserLoading,
+    selectCreating,
+    selectUpdating,
+    selectDeleting,
+    selectTestimonialError,
+    selectPublicError,
+    selectUserError,
+    selectShowForm,
+    selectIsEditing,
+    selectTestimonialPagination,
+    selectCanUserTestify,
+    selectUserHasTestimonial,
+    selectTestimonialFormValid,
+} from './slices/testimonialSlice';

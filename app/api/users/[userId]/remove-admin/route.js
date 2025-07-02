@@ -1,4 +1,4 @@
-// app/api/users/[userId]/remove-admin/route.js
+// app/api/users/[userId]/remove-admin/page.jsx
 import { NextResponse } from 'next/server';
 import connectMongoDB from '@/lib/config/db';
 import User from '@/lib/models/User';

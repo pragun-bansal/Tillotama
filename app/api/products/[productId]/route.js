@@ -1,4 +1,4 @@
-//app/api/products/[productId]/route.js
+//app/api/products/[productId]/page.jsx
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '../../../../lib/config/db';
 import Product from '../../../../lib/models/Product';

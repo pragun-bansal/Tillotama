@@ -1,4 +1,4 @@
-//app/api/wishlist/route.js
+//app/api/wishlist/page.jsx
 import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '@/lib/config/db';
 import Wishlist from '@/lib/models/Wishlist';

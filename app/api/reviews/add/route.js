@@ -1,4 +1,4 @@
-// app/api/reviews/add/route.js - POST add a new review
+// app/api/reviews/add/page.jsx - POST add a new review
 import Review from '@/lib/models/Review';
 import Product from '@/lib/models/Product';
 import User from '@/lib/models/User';
