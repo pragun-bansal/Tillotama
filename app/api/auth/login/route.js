@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '../../../../lib/config/db';
 import User from '../../../../lib/models/User';
 import { validPassword, issueJWT } from '../../../../lib/utils/auth';
-import { validateLoginInput } from '../../../../lib/utils/validation';
+import { validateLoginInput } from '../../../../lib/utils/Validation';
 
 export async function POST(request) {
     try {

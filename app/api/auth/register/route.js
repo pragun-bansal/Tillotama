@@ -1,8 +1,9 @@
-//app/api/auth/register/route.jsimport { NextRequest, NextResponse } from 'next/server';
+//app/api/auth/register/route.js
+import { NextRequest, NextResponse } from 'next/server';
 import connectMongoDB from '../../../../lib/config/db';
 import User from '../../../../lib/models/User';
 import { genPassword, issueJWT } from '../../../../lib/utils/auth';
-import { validateRegisterInput } from '../../../../lib/utils/validation';
+import { validateRegisterInput } from '../../../../lib/utils/Validation';
 
 export async function POST(request) {
     try {
