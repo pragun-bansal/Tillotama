@@ -395,7 +395,7 @@ import { addToWishlist, removeFromWishlist, toggleWishlistItem } from "@/store/s
 import { toast } from "react-toastify";
 import { Plus, Minus, ShoppingCart } from "lucide-react";
 
-const ProductCard = ({ product, showTagline = false, showRating = false, onQuickView }) => {
+const ProductCard = ({ product, showTagline = false, showRating = false, onQuickView, showCartControls = true, showCartOptions = true}) => {
     const dispatch = useDispatch();
     const [hover, setHover] = useState(false);
     const [imageError, setImageError] = useState(false);
@@ -584,7 +584,7 @@ const ProductCard = ({ product, showTagline = false, showRating = false, onQuick
             <div className="relative flex flex-col bg-white rounded-lg overflow-hidden shadow-md transition-all duration-300 transform group-hover:scale-105 group-hover:shadow-xl h-full">
                 {/* Product Image */}
                 <div
-                    className="relative aspect-square h-64 md:h-auto overflow-hidden bg-gray-100"
+                    className="relative aspect-[3/4] h-auto overflow-hidden bg-gray-100"
                     onMouseEnter={() => setHover(true)}
                     onMouseLeave={() => setHover(false)}
                 >
@@ -754,8 +754,8 @@ const ProductCard = ({ product, showTagline = false, showRating = false, onQuick
                     )}
 
                     {/* Cart Quantity Display */}
-                    {isInCart && (
-                        <div className="mt-2 flex items-center justify-between">
+                    {showCartOptions && isInCart && (
+                        <div className="mt-2 flex-row items-center justify-between">
                             <div className="text-sm text-green-600 font-medium flex items-center">
                                 <ShoppingCart className="w-4 h-4 mr-1" />
                                 {cartItemQuantity} in cart
@@ -769,67 +769,69 @@ const ProductCard = ({ product, showTagline = false, showRating = false, onQuick
                     )}
 
                     {/* Cart Controls */}
-                    <div className="mt-3 mt-auto">
-                        {isInCart ? (
-                            /* Quantity Controls for items in cart */
-                            <div className="flex items-center space-x-2">
-                                <button
-                                    onClick={handleDecreaseQuantity}
-                                    disabled={isAddingToCart}
-                                    className="flex items-center justify-center w-8 h-8 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors disabled:opacity-50"
-                                    aria-label="Decrease quantity"
-                                >
-                                    <Minus className="w-4 h-4" />
-                                </button>
+                    {showCartOptions && (
+                        <div className="mt-auto">
+                            {showCartControls && isInCart ? (
+                                /* Quantity Controls for items in cart */
+                                <div className="flex items-center space-x-2">
+                                    <button
+                                        onClick={handleDecreaseQuantity}
+                                        disabled={isAddingToCart}
+                                        className="flex items-center justify-center w-8 h-8 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors disabled:opacity-50"
+                                        aria-label="Decrease quantity"
+                                    >
+                                        <Minus className="w-4 h-4" />
+                                    </button>
 
-                                <span className="flex-1 text-center font-medium text-gray-900 bg-gray-50 py-1 rounded-md">
-                                    {cartItemQuantity}
-                                </span>
+                                    <span className="flex-1 text-center font-medium text-gray-900 bg-gray-50 py-1 rounded-md">
+                                        {cartItemQuantity}
+                                    </span>
 
+                                    <button
+                                        onClick={handleAddToCart}
+                                        disabled={isAddingToCart || isMaxQuantity || product.stock <= 0 || !isAuthenticated}
+                                        className={`flex items-center justify-center w-8 h-8 rounded-md transition-colors ${
+                                            isMaxQuantity || product.stock <= 0
+                                                ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                                : 'bg-pink text-white hover:bg-pink-700'
+                                        } ${isAddingToCart ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        aria-label="Increase quantity"
+                                    >
+                                        {isAddingToCart ? (
+                                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                        ) : (
+                                            <Plus className="w-4 h-4" />
+                                        )}
+                                    </button>
+                                </div>
+                            ) : (
+                                /* Add to Cart Button for items not in cart */
                                 <button
                                     onClick={handleAddToCart}
-                                    disabled={isAddingToCart || isMaxQuantity || product.stock <= 0 || !isAuthenticated}
-                                    className={`flex items-center justify-center w-8 h-8 rounded-md transition-colors ${
-                                        isMaxQuantity || product.stock <= 0
-                                            ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                    disabled={isAddingToCart || product.stock <= 0 || !isAuthenticated}
+                                    className={`w-full text-sm font-medium py-2 px-3 rounded-md transition-all duration-200 ${
+                                        product.stock <= 0
+                                            ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
                                             : 'bg-pink text-white hover:bg-pink-700'
                                     } ${isAddingToCart ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                    aria-label="Increase quantity"
                                 >
                                     {isAddingToCart ? (
-                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                        <div className="flex items-center justify-center">
+                                            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                                            Adding...
+                                        </div>
+                                    ) : product.stock <= 0 ? (
+                                        'Out of Stock'
                                     ) : (
-                                        <Plus className="w-4 h-4" />
+                                        'Add to Cart'
                                     )}
                                 </button>
-                            </div>
-                        ) : (
-                            /* Add to Cart Button for items not in cart */
-                            <button
-                                onClick={handleAddToCart}
-                                disabled={isAddingToCart || product.stock <= 0 || !isAuthenticated}
-                                className={`w-full text-sm font-medium py-2 px-3 rounded-md transition-all duration-200 ${
-                                    product.stock <= 0
-                                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                        : 'bg-pink text-white hover:bg-pink-700'
-                                } ${isAddingToCart ? 'opacity-50 cursor-not-allowed' : ''}`}
-                            >
-                                {isAddingToCart ? (
-                                    <div className="flex items-center justify-center">
-                                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
-                                        Adding...
-                                    </div>
-                                ) : product.stock <= 0 ? (
-                                    'Out of Stock'
-                                ) : (
-                                    'Add to Cart'
-                                )}
-                            </button>
-                        )}
-                    </div>
+                            )}
+                        </div>
+                    )}
 
                     {/* Authentication Required Message */}
-                    {!isAuthenticated && (
+                    {showCartOptions && !isAuthenticated && (
                         <p className="mt-2 text-xs text-gray-500 text-center">
                             <Link href="/login" className="text-pink-600 hover:underline">
                                 Log in

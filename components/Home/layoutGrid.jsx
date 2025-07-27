@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import {useRouter} from "next/navigation"
+import {usePlatform} from "@/hooks/usePlatform";
 
 export const LayoutGrid = ({
                                cards
@@ -23,18 +24,19 @@ export const LayoutGrid = ({
     const handleClick = (card) => {
         router.push(`/allproducts/${card.title.toLocaleLowerCase()}/newArrivals`);
     }
+    const platform = usePlatform()
 
     return (
         (<div
-            className="w-full h-full p-10 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3  max-w-7xl mx-auto gap-4 relative">
+            className={`w-full h-full p-10 grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3  mx-auto gap-4 relative ${platform.isWindows?"max-w-5xl":"max-w-7xl"}`}>
             {cards.map((card, i) => (
-                <div key={i} className={cn(card.className, "h-[30vh] md:h-full")}>
+                <div key={i} className={cn(card.className, "aspect-square")}>
                     <motion.div
                         onMouseEnter={() => handleMouseEnter(card)}
                         onMouseLeave={handleMouseLeave}
 
-                        className={cn(card.className, "relative overflow-hidden h-[30vh]", selected?.id === card.id
-                            ? "rounded-lg cursor-pointer absolute w-[80vw] md:w-1/2 lg:h-1/2 lg:w-1/3 z-19 flex flex-wrap flex-col"
+                        className={cn(card.className, "relative overflow-hidden aspect-square", selected?.id === card.id
+                            ? "rounded-lg cursor-pointer absolute w-[70vw] md:w-[45%] lg:h-[45%] lg:w-[33%] z-19 flex flex-wrap flex-col"
                             : lastSelected?.id === card.id
                                 ? "z-18 bg-white rounded-xl h-full w-full"
                                 : "bg-white rounded-xl h-full w-full")}
@@ -77,7 +79,7 @@ const SelectedCard = ({
                       }) => {
     return (
         (<div
-            className="bg-transparent h-full w-full flex flex-col justify-end rounded-lg shadow-2xl relative z-[60]" onClick={()=>{console.log(selected) ;handleClick(selected); }}>
+            className="bg-transparent aspect-square h-full w-full flex flex-col justify-end rounded-lg shadow-2xl relative z-[60]" onClick={()=>{console.log(selected) ;handleClick(selected); }}>
             <motion.div
                 initial={{
                     opacity: 0,
@@ -85,7 +87,7 @@ const SelectedCard = ({
                 animate={{
                     opacity: 0.6,
                 }}
-                className="absolute inset-0 h-full w-full bg-black opacity-60 z-10" />
+                className="absolute aspect-square inset-0 h-full w-full bg-black opacity-60 z-10" />
             <motion.div
                 layoutId={`content-${selected?.id}`}
                 initial={{

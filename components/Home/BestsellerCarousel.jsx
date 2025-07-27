@@ -47,7 +47,7 @@ const BestsellerCarousel = ({
         const updateItemsPerView = () => {
             const width = window.innerWidth;
             if (width < 640) {
-                setItemsPerView(1.2); // Mobile: show partial next item
+                setItemsPerView(2); // Mobile: show partial next item
             } else if (width < 768) {
                 setItemsPerView(2);
             } else if (width < 1024) {
@@ -346,6 +346,7 @@ const BestsellerCarousel = ({
                                     product={product}
                                     showTagline={true}
                                     showRating={true}
+                                    showCartOptions={false}
                                 />
                             </div>
                         ))}

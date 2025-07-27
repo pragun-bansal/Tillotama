@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import {usePlatform} from "@/hooks/usePlatform";
 
 const HeroSlideshow = () => {
     const [currentSlide, setCurrentSlide] = useState(0);
@@ -6,6 +7,7 @@ const HeroSlideshow = () => {
     const [nextSlide, setNextSlide] = useState(null);
     const [isMounted, setIsMounted] = useState(false);
     const [contentVisible, setContentVisible] = useState(true);
+    const platform = usePlatform();
 
     // Sample slide data - replace with your actual content
     const slides = [
@@ -91,7 +93,7 @@ const HeroSlideshow = () => {
     // Don't render until mounted to prevent hydration issues
     if (!isMounted) {
         return (
-            <div className="relative w-screen h-screen overflow-hidden bg-black">
+            <div className={`relative  h-screen overflow-hidden bg-black ${platform.isWindows?"w-[98.8vw]":"w-screen"}`}>
                 <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center text-white">
                     <div className="text-center">
                         <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
@@ -103,7 +105,7 @@ const HeroSlideshow = () => {
     }
 
     return (
-        <div className="relative w-screen h-screen overflow-hidden">
+        <div className={`relative ${platform.isWindows?"w-[98.8vw]":"w-screen"} h-screen overflow-hidden`}>
             {/* Current Slide Video - Always visible */}
             <div className="absolute top-0 left-0 w-full h-full">
                 <div className={`absolute top-0 left-0 w-full h-full transform transition-all duration-1200 ease-out ${

@@ -696,6 +696,8 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
     const [droppeddown2, setDroppeddown2] = useState<boolean>(false);
     const [isScrolled, setIsScrolled] = useState<boolean>(false);
     const [navDropdown, setNavDropdown] = useState<boolean>(false);
+    const [mobileMenuOpen, setMobileMenuOpen] = useState<boolean>(false);
+    const [mobileProductsDropdown, setMobileProductsDropdown] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>('');
     const router = useRouter();
     const dispatch = useAppDispatch();
@@ -944,9 +946,10 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                 {/* Navigation Toggle & Search Section - Left Side */}
                 <div className="absolute left-0 md:mt-[3vh]">
                     <div className="flex items-center space-x-3">
+                        {/* Desktop Menu Toggle */}
                         <button
                             onClick={() => setNavDropdown(!navDropdown)}
-                            className={`flex items-center space-x-2 px-3 py-2 rounded hover:bg-gray-100 transition-all duration-300 ${
+                            className={`hidden md:flex items-center space-x-2 px-3 py-2 rounded hover:bg-gray-100 transition-all duration-300 ${
                                 isScrolled ? 'opacity-100 visible' : 'opacity-0 invisible'
                             }`}
                         >
@@ -966,6 +969,39 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                                 />
                             </svg>
                         </button>
+
+                        {/* Mobile Menu Toggle */}
+                        {isScrolled && (<button
+                            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                            className={`md:hidden flex items-center space-x-2 px-3 py-2 rounded hover:bg-gray-100 transition-all duration-300 ${
+                                isScrolled ? 'text-black' : 'text-white'
+                            }`}
+                        >
+                            <svg
+                                className={`w-6 h-6 transition-transform duration-200 ${
+                                    mobileMenuOpen ? 'rotate-45' : ''
+                                }`}
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                {mobileMenuOpen ? (
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M6 18L18 6M6 6l12 12"
+                                    />
+                                ) : (
+                                    <path
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        strokeWidth={2}
+                                        d="M4 6h16M4 12h16M4 18h16"
+                                    />
+                                )}
+                            </svg>
+                        </button>)}
 
                         {/* Updated Search Form with proper functionality */}
                         <form className="hidden md:block w-48 lg:w-64" onSubmit={handleSearch}>
@@ -1060,7 +1096,7 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                                     onMouseOut={() => setDroppeddown2(false)}
                                     className={`${
                                         dropdown2 || droppeddown2
-                                            ? 'absolute translate-x-[-10px] translate-y-[-10px]  z-10 font-normal divide-y bg-white divide-gray-100 shadow-md w-44'
+                                            ? 'hidden md:absolute translate-x-[-10px] translate-y-[-10px]  z-10 font-normal divide-y bg-white divide-gray-100 shadow-md w-44'
                                             : 'hidden'
                                     }`}
                                 >
@@ -1301,6 +1337,266 @@ export const Navbar: React.FC<NavbarProps> = ({ show, setShow }) => {
                             </div>
                         </div>
                     </nav>
+                </div>
+            </div>
+
+            {/* Mobile Sidebar */}
+            <div className={`fixed inset-0 z-50 lg:hidden transition-opacity duration-300 ${
+                mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'
+            }`}>
+                {/* Backdrop */}
+                <div 
+                    className={`absolute inset-0 bg-black transition-opacity duration-300 ${
+                        mobileMenuOpen ? 'bg-opacity-50' : 'bg-opacity-0'
+                    }`}
+                    onClick={() => setMobileMenuOpen(false)}
+                />
+                
+                {/* Sidebar */}
+                <div className={`absolute top-0 left-0 h-full w-80 max-w-[85vw] z-100 bg-white shadow-lg transform transition-transform duration-300 ease-in-out ${
+                    mobileMenuOpen ? 'translate-x-0' : '-translate-x-full'
+                }`}>
+                    {/* Sidebar Header */}
+                    <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-pink text-white">
+                        <h2 className="text-xl font-semibold">Menu</h2>
+                        <button
+                            onClick={() => setMobileMenuOpen(false)}
+                            className="p-2 rounded-md hover:bg-white/10 transition-colors"
+                        >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    {/* Mobile Search */}
+                    <div className="p-4 border-b border-gray-200">
+                        <form onSubmit={handleSearch}>
+                            <div className="relative">
+                                <button
+                                    type="submit"
+                                    className="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-400 hover:text-gray-600"
+                                >
+                                    <svg className="w-4 h-4" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
+                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
+                                    </svg>
+                                </button>
+                                <input
+                                    type="search"
+                                    value={searchTerm}
+                                    onChange={handleSearchInputChange}
+                                    className="w-full p-3 pl-10 text-sm border border-gray-300 rounded-lg bg-gray-50 text-black placeholder-gray-500"
+                                    placeholder="Search products..."
+                                />
+                            </div>
+                        </form>
+                    </div>
+
+                    {/* Navigation Menu */}
+                    <div className="flex-1 overflow-y-auto ">
+                        <nav className="p-4 ">
+                            <ul className="space-y-2">
+                                {/* Home */}
+                                <li>
+                                    <Link
+                                        href="/"
+                                        className="block px-4 py-3 text-gray-700 font-medium hover:bg-gray-100 rounded-md transition-colors"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        Home
+                                    </Link>
+                                </li>
+
+                                {/* Products with dropdown */}
+                                <li>
+                                    <button
+                                        onClick={() => setMobileProductsDropdown(!mobileProductsDropdown)}
+                                        className="flex items-center justify-between w-full px-4 py-3 text-gray-700 font-medium hover:bg-gray-100 rounded-md transition-colors"
+                                    >
+                                        <span>Products</span>
+                                        <svg
+                                            className={`w-4 h-4 transition-transform duration-200 ${
+                                                mobileProductsDropdown ? 'rotate-180' : ''
+                                            }`}
+                                            fill="none"
+                                            stroke="currentColor"
+                                            viewBox="0 0 24 24"
+                                        >
+                                            <path
+                                                strokeLinecap="round"
+                                                strokeLinejoin="round"
+                                                strokeWidth={2}
+                                                d="M19 9l-7 7-7-7"
+                                            />
+                                        </svg>
+                                    </button>
+                                    <div className={`overflow-hidden transition-all duration-300 ${
+                                        mobileProductsDropdown ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
+                                    }`}>
+                                        <ul className="ml-4 mt-2 space-y-1">
+                                            {Categories.map((item, index) => (
+                                                <li key={index}>
+                                                    <Link
+                                                        href={`/allproducts/${item.name}/newArrivals`}
+                                                        className="block px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+                                                        onClick={() => setMobileMenuOpen(false)}
+                                                    >
+                                                        {item.name}
+                                                    </Link>
+                                                </li>
+                                            ))}
+                                            <li>
+                                                <Link
+                                                    href="/allproducts/all/newArrivals"
+                                                    className="block px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors"
+                                                    onClick={() => setMobileMenuOpen(false)}
+                                                >
+                                                    All Products
+                                                </Link>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </li>
+
+                                {/* About */}
+                                <li>
+                                    <Link
+                                        href="/about"
+                                        className="block px-4 py-3 text-gray-700 font-medium hover:bg-gray-100 rounded-md transition-colors"
+                                        onClick={() => setMobileMenuOpen(false)}
+                                    >
+                                        About Us
+                                    </Link>
+                                </li>
+
+                                {/* Testimonials */}
+                                <li>
+                                    <button
+                                        onClick={() => {
+                                            handleTestimonial();
+                                            setMobileMenuOpen(false);
+                                        }}
+                                        className="block w-full text-left px-4 py-3 font-medium text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                    >
+                                        Testimonials
+                                    </button>
+                                </li>
+
+                                {/* Admin (if admin user) */}
+                                {user?.admin && (
+                                    <li>
+                                        <button
+                                            onClick={() => {
+                                                router.push('/admin');
+                                                setMobileMenuOpen(false);
+                                            }}
+                                            className="block w-full text-left px-4 py-3 font-medium text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                        >
+                                            Admin
+                                        </button>
+                                    </li>
+                                )}
+
+                                {/* User Profile Section */}
+                                <li className="pt-4 border-t border-gray-200">
+                                    {token ? (
+                                        <div className="space-y-2">
+                                            <div className="flex items-center px-4 py-3">
+                                                <Image
+                                                    className="h-10 w-10 rounded-full mr-3"
+                                                    src={user?.pfp || '/default-avatar.png'}
+                                                    alt="Profile"
+                                                    width={40}
+                                                    height={40}
+                                                />
+                                                <div>
+                                                    <p className="text-sm font-medium text-gray-700">{user?.name || 'User'}</p>
+                                                    <p className="text-xs text-gray-500">{user?.email}</p>
+                                                </div>
+                                            </div>
+                                            <Link
+                                                href="/profile"
+                                                className="block px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors ml-4"
+                                                onClick={() => setMobileMenuOpen(false)}
+                                            >
+                                                View Profile
+                                            </Link>
+                                            {/*<Link*/}
+                                            {/*    href="/cart"*/}
+                                            {/*    className="block px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors ml-4"*/}
+                                            {/*    onClick={() => setMobileMenuOpen(false)}*/}
+                                            {/*>*/}
+                                            {/*    Cart*/}
+                                            {/*</Link>*/}
+                                            {/*<Link*/}
+                                            {/*    href="/wishlist"*/}
+                                            {/*    className="block px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md transition-colors ml-4"*/}
+                                            {/*    onClick={() => setMobileMenuOpen(false)}*/}
+                                            {/*>*/}
+                                            {/*    Wishlist*/}
+                                            {/*</Link>*/}
+                                            <button
+                                                onClick={() => {
+                                                    handleLogOut();
+                                                    setMobileMenuOpen(false);
+                                                }}
+                                                className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-md transition-colors ml-4"
+                                            >
+                                                Logout
+                                            </button>
+                                        </div>
+                                    ) : (
+                                        <button
+                                            onClick={() => {
+                                                router.push('/login');
+                                                setMobileMenuOpen(false);
+                                            }}
+                                            className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-100 rounded-md transition-colors"
+                                        >
+                                            Login
+                                        </button>
+                                    )}
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    {/* Social Media Links */}
+                    <div className="p-4 border-t border-gray-200">
+                        <p className="text-sm font-medium text-gray-700 mb-3">Follow Us</p>
+                        <div className="flex space-x-4">
+                            <a
+                                href="https://www.instagram.com/tilottamabyarchana/"
+                                target="_blank"
+                                rel="noopener"
+                                className="p-2 text-gray-600 hover:text-pink-600 transition-colors"
+                            >
+                                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 448 512">
+                                    <path d="M224.1 141c-63.6 0-114.9 51.3-114.9 114.9s51.3 114.9 114.9 114.9S339 319.5 339 255.9 287.7 141 224.1 141zm0 189.6c-41.1 0-74.7-33.5-74.7-74.7s33.5-74.7 74.7-74.7 74.7 33.5 74.7 74.7-33.6 74.7-74.7 74.7zm146.4-194.3c0 14.9-12 26.8-26.8 26.8-14.9 0-26.8-12-26.8-26.8s12-26.8 26.8-26.8 26.8 12 26.8 26.8zm76.1 27.2c-1.7-35.9-9.9-67.7-36.2-93.9-26.2-26.2-58-34.4-93.9-36.2-37-2.1-147.9-2.1-184.9 0-35.8 1.7-67.6 9.9-93.9 36.1s-34.4 58-36.2 93.9c-2.1 37-2.1 147.9 0 184.9 1.7 35.9 9.9 67.7 36.2 93.9s58 34.4 93.9 36.2c37 2.1 147.9 2.1 184.9 0 35.9-1.7 67.7-9.9 93.9-36.2 26.2-26.2 34.4-58 36.2-93.9 2.1-37 2.1-147.8 0-184.8zM398.8 388c-7.8 19.6-22.9 34.7-42.6 42.6-29.5 11.7-99.5 9-132.1 9s-102.7 2.6-132.1-9c-19.6-7.8-34.7-22.9-42.6-42.6-11.7-29.5-9-99.5-9-132.1s-2.6-102.7 9-132.1c7.8-19.6 22.9-34.7 42.6-42.6 29.5-11.7 99.5-9 132.1-9s102.7-2.6 132.1 9c19.6 7.8 34.7 22.9 42.6 42.6 11.7 29.5 9 99.5 9 132.1s2.7 102.7-9 132.1z" />
+                                </svg>
+                            </a>
+                            <a
+                                href="https://www.facebook.com/tilottamabyarchana/"
+                                target="_blank"
+                                rel="noopener"
+                                className="p-2 text-gray-600 hover:text-pink-600 transition-colors"
+                            >
+                                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 320 512">
+                                    <path d="M279.14 288l14.22-92.66h-88.91v-60.13c0-25.35 12.42-50.06 52.24-50.06h40.42V6.26S260.43 0 225.36 0c-73.22 0-121.08 44.38-121.08 124.72v70.62H22.89V288h81.39v224h100.17V288z" />
+                                </svg>
+                            </a>
+                            <a
+                                href="https://wa.me/+919311144320?text=Hey%20There,%20I'm%20interested%20in%20your%20products"
+                                target="_blank"
+                                rel="noopener"
+                                className="p-2 text-gray-600 hover:text-pink-600 transition-colors"
+                            >
+                                <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 448 512">
+                                    <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7.9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
