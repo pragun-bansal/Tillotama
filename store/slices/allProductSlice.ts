@@ -1254,7 +1254,7 @@ interface ProductState {
 
 export const fetchAllProducts = createAsyncThunk(
     'allProducts/fetchAll',
-    async (options?: { forceRefresh?: boolean }, { getState, rejectWithValue }) => {
+    async (options: { forceRefresh?: boolean } = {}, { getState, rejectWithValue }) => {
         try {
             const state = getState() as any;
             const currentTime = Date.now();
@@ -1636,13 +1636,13 @@ const allProductSlice = createSlice({
             const brandSet = new Set<string>();
 
             state.items.forEach(product => {
-                product.category.forEach(cat => {
+                product.category?.forEach(cat => {
                     if (cat.trim()) {
                         categorySet.add(cat.trim().toLowerCase());
                     }
                 });
 
-                if (product.category.length > 0) {
+                if (product.category?.length > 0) {
                     brandSet.add(product.category[0].trim());
                 }
             });

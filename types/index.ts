@@ -13,6 +13,9 @@ export interface User {
     pinCode?: string;
     phoneNumber?: string;
     gender?: 'male' | 'female' | 'other';
+    allowTestimonialEmails?: boolean;
+    createdAt?: string;
+    testimonials?: string[];
 }
 
 export interface Product {
@@ -24,6 +27,7 @@ export interface Product {
     description: string;
     rating: number;
     price: number;
+    discountPrice?: number;
     stock: number;
     sizes: Array<{
         size: string;

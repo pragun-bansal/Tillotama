@@ -8,7 +8,7 @@ export async function GET(request, { params }) {
     try {
         await connectMongoDB();
 
-        const { productId } = params;
+        const { productId } = await params;
 
         const product = await Product.findOne({ _id: productId }).populate({
             path: "reviews",

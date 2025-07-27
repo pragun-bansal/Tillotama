@@ -449,6 +449,7 @@ import allProductSlice from './slices/allProductSlice';
 import adminSlice from './slices/adminSlice';
 import reviewSlice from './slices/reviewSlice';
 import testimonialSlice from './slices/testimonialSlice'; // Add this import
+import orderSlice from "@/store/slices/orderSlice";
 
 export const store = configureStore({
     reducer: {
@@ -459,6 +460,7 @@ export const store = configureStore({
         admin: adminSlice,
         reviews: reviewSlice,
         testimonials: testimonialSlice, // Add this line
+        orders: orderSlice,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({

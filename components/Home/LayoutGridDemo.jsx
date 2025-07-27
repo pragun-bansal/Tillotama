@@ -150,6 +150,11 @@ import { Categories } from "@/public/Categories";
 export function LayoutGridDemo() {
     return (
         <div className="h-fit md:h-screen py-20 w-full">
+            <div className="text-center mb-8">
+                <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                    Our Collection
+                </h2>
+            </div>
             <LayoutGrid cards={cards} />
         </div>
     );

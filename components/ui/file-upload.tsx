@@ -227,6 +227,7 @@ export const FileUpload = ({
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = (newFiles: File[]) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions
     onChange && onChange(newFiles);
   };
 

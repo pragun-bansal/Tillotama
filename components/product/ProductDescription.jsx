@@ -7,8 +7,8 @@ import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // Import carousel styles
 
 import {  useAuth, useCartOperations, useWishlistOperations } from '@/hooks/redux';
-import { addItemToCart } from '@/store/slices/cartSlice';
-import { addToWishlist } from '@/store/slices/wishlistSlice';
+import { addItemToCart, updateCartItemQuantity, removeFromCart } from '@/store/slices/cartSlice';
+import { addToWishlist, removeFromWishlist } from '@/store/slices/wishlistSlice';
 import { toast } from 'react-toastify';
 import { CareGuide, ReturnPolicy, Terms } from '@/components/product/InfoJSON';
 import { LensDemo } from '@/components/product/LensDemo';
@@ -17,7 +17,7 @@ import {useDispatch} from "react-redux";
 const ProductDescription = ({ product }) => {
     const dispatch = useDispatch();
     const { isAuthenticated, token } = useAuth();
-    const { isInCart } = useCartOperations();
+    const { isInCart, getItemQuantity } = useCartOperations();
     const { isInWishlist } = useWishlistOperations();
 
     // Local state
@@ -27,10 +27,14 @@ const ProductDescription = ({ product }) => {
     const [showColour, setShowColour] = useState(false);
     const [showLottie, setShowLottie] = useState(false);
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
+    const [isUpdatingCart, setIsUpdatingCart] = useState(false);
+    const [isUpdatingWishlist, setIsUpdatingWishlist] = useState(false);
 
     // Check if product is already in cart/wishlist
     const isProductInCart = isInCart(product._id);
     const isProductInWishlist = isInWishlist(product._id);
+    const cartItemQuantity = getItemQuantity(product._id);
+    const isMaxQuantity = isProductInCart && cartItemQuantity >= product.stock;
 
     const handleAddToCart = async () => {
         if (!isAuthenticated) {
@@ -47,43 +51,98 @@ const ProductDescription = ({ product }) => {
             return;
         }
 
-        if (isProductInCart) {
-            toast.info("Product already in cart", {
-                position: "top-center",
-                autoClose: 2000,
-                theme: "dark",
-            });
+        // Check stock availability
+        if (product.stock <= 0) {
+            toast.error("Product is out of stock");
             return;
         }
 
+        // Check if adding one more would exceed stock
+        if (isProductInCart && cartItemQuantity >= product.stock) {
+            toast.error(`Only ${product.stock} items available in stock`);
+            return;
+        }
+
+        setIsUpdatingCart(true);
         try {
-            // Dispatch Redux action
-            await dispatch(addItemToCart({
-                productId: product._id,
-                qty: 1
-            })).unwrap();
+            if (isProductInCart) {
+                // If item is already in cart, increase quantity by 1
+                await dispatch(updateCartItemQuantity({
+                    productId: product._id,
+                    qty: cartItemQuantity + 1
+                })).unwrap();
 
-            setShowLottie(true);
-            setTimeout(() => {
-                setShowLottie(false);
-            }, 3000);
+                toast.success(`Quantity updated to ${cartItemQuantity + 1}`, {
+                    position: "top-center",
+                    autoClose: 2000,
+                    theme: "dark",
+                });
+            } else {
+                // If item is not in cart, add it with quantity 1
+                await dispatch(addItemToCart({
+                    productId: product._id,
+                    qty: 1
+                })).unwrap();
 
-            toast.success("Added to cart!", {
-                position: "top-center",
-                autoClose: 2000,
-                theme: "dark",
-            });
+                setShowLottie(true);
+                setTimeout(() => {
+                    setShowLottie(false);
+                }, 3000);
+
+                toast.success("Added to cart!", {
+                    position: "top-center",
+                    autoClose: 2000,
+                    theme: "dark",
+                });
+            }
         } catch (error) {
             console.error('Add to cart error:', error);
-            toast.error("Failed to add to cart", {
+            toast.error("Failed to update cart", {
                 position: "top-center",
                 autoClose: 2000,
                 theme: "dark",
             });
+        } finally {
+            setIsUpdatingCart(false);
         }
     };
 
-    const handleAddToWishlist = async () => {
+    // Handle decrease quantity
+    const handleDecreaseQuantity = async () => {
+        if (!isProductInCart || cartItemQuantity <= 0) return;
+
+        setIsUpdatingCart(true);
+        try {
+            if (cartItemQuantity === 1) {
+                // Remove from cart if quantity would become 0
+                await dispatch(removeFromCart(product._id)).unwrap();
+                toast.success("Removed from cart", {
+                    position: "top-center",
+                    autoClose: 2000,
+                    theme: "dark",
+                });
+            } else {
+                // Decrease quantity by 1
+                await dispatch(updateCartItemQuantity({
+                    productId: product._id,
+                    qty: cartItemQuantity - 1
+                })).unwrap();
+
+                toast.success(`Quantity updated to ${cartItemQuantity - 1}`, {
+                    position: "top-center",
+                    autoClose: 2000,
+                    theme: "dark",
+                });
+            }
+        } catch (error) {
+            console.error('Error updating cart:', error);
+            toast.error("Failed to update cart");
+        } finally {
+            setIsUpdatingCart(false);
+        }
+    };
+
+    const handleWishlistToggle = async () => {
         if (!isAuthenticated) {
             toast.error("Please login to continue", {
                 position: "top-center",
@@ -98,39 +157,43 @@ const ProductDescription = ({ product }) => {
             return;
         }
 
-        if (isProductInWishlist) {
-            toast.info("Product already in wishlist", {
-                position: "top-center",
-                autoClose: 2000,
-                theme: "dark",
-            });
-            return;
-        }
-
+        setIsUpdatingWishlist(true);
         try {
-            // Dispatch Redux action
-            await dispatch(addToWishlist({
-                productId: product._id,
-                qty: 1
-            })).unwrap();
+            if (isProductInWishlist) {
+                // Remove from wishlist
+                await dispatch(removeFromWishlist(product._id)).unwrap();
+                toast.success("Removed from wishlist!", {
+                    position: "top-center",
+                    autoClose: 2000,
+                    theme: "dark",
+                });
+            } else {
+                // Add to wishlist
+                await dispatch(addToWishlist({
+                    productId: product._id,
+                    qty: 1
+                })).unwrap();
 
-            setShowLottie(true);
-            setTimeout(() => {
-                setShowLottie(false);
-            }, 3000);
+                setShowLottie(true);
+                setTimeout(() => {
+                    setShowLottie(false);
+                }, 3000);
 
-            toast.success("Added to wishlist!", {
-                position: "top-center",
-                autoClose: 2000,
-                theme: "dark",
-            });
+                toast.success("Added to wishlist!", {
+                    position: "top-center",
+                    autoClose: 2000,
+                    theme: "dark",
+                });
+            }
         } catch (error) {
-            console.error('Add to wishlist error:', error);
-            toast.error("Failed to add to wishlist", {
+            console.error('Wishlist error:', error);
+            toast.error("Failed to update wishlist", {
                 position: "top-center",
                 autoClose: 2000,
                 theme: "dark",
             });
+        } finally {
+            setIsUpdatingWishlist(false);
         }
     };
 
@@ -253,36 +316,115 @@ const ProductDescription = ({ product }) => {
                         ₹{product.price?.toLocaleString()}
                     </h1>
 
+                    {/* Cart Quantity Display */}
+                    {isProductInCart && (
+                        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+                            <div className="flex items-center justify-between">
+                                <div className="text-sm text-green-600 font-medium flex items-center">
+                                    <svg className="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.432-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/>
+                                    </svg>
+                                    {cartItemQuantity} in cart
+                                </div>
+                                {isMaxQuantity && (
+                                    <span className="text-xs text-orange-600 font-medium">
+                                        Max quantity reached
+                                    </span>
+                                )}
+                            </div>
+                        </div>
+                    )}
+
                     {/* Action Buttons */}
                     <div className="flex flex-col sm:flex-row gap-2 mt-4">
-                        <button
-                            onClick={handleAddToCart}
-                            disabled={isProductInCart}
-                            className={`focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 text-base flex items-center justify-center leading-none text-white w-full py-4 transition-colors ${
-                                isProductInCart
-                                    ? 'bg-lightpink cursor-not-allowed'
-                                    : 'bg-pink hover:shadow hover:shadow-xl'
-                            }`}
-                        >
-                            <svg className="mr-3 fill-[white]" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
-                                <path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/>
-                            </svg>
-                            {isProductInCart ? 'Already in Cart' : 'Add to Cart'}
-                        </button>
+                        {isProductInCart ? (
+                            /* Quantity Controls for items in cart */
+                            <div className="flex items-center space-x-2 w-full">
+                                <button
+                                    onClick={handleDecreaseQuantity}
+                                    disabled={isUpdatingCart}
+                                    className="flex items-center justify-center w-12 h-12 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors disabled:opacity-50"
+                                    aria-label="Decrease quantity"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
+                                    </svg>
+                                </button>
+
+                                <span className="flex-1 text-center font-medium text-gray-900 bg-gray-50 py-3 rounded-md text-lg">
+                                    {cartItemQuantity}
+                                </span>
+
+                                <button
+                                    onClick={handleAddToCart}
+                                    disabled={isUpdatingCart || isMaxQuantity || product.stock <= 0 || !isAuthenticated}
+                                    className={`flex items-center justify-center w-12 h-12 rounded-md transition-colors ${
+                                        isMaxQuantity || product.stock <= 0
+                                            ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                                            : 'bg-pink text-white hover:bg-pink-700'
+                                    } ${isUpdatingCart ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                    aria-label="Increase quantity"
+                                >
+                                    {isUpdatingCart ? (
+                                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                                    ) : (
+                                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                        </svg>
+                                    )}
+                                </button>
+                            </div>
+                        ) : (
+                            /* Add to Cart Button */
+                            <button
+                                onClick={handleAddToCart}
+                                disabled={isUpdatingCart || product.stock <= 0 || !isAuthenticated}
+                                className={`focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 text-base flex items-center justify-center leading-none text-white w-full py-4 transition-colors ${
+                                    product.stock <= 0
+                                        ? 'bg-gray-400 cursor-not-allowed'
+                                        : 'bg-pink hover:shadow hover:shadow-xl'
+                                } ${isUpdatingCart ? 'opacity-50 cursor-not-allowed' : ''}`}
+                            >
+                                {isUpdatingCart ? (
+                                    <div className="flex items-center">
+                                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                                        Adding...
+                                    </div>
+                                ) : (
+                                    <>
+                                        <svg className="mr-3 fill-[white]" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                                            <path d="M0 24C0 10.7 10.7 0 24 0H69.5c22 0 41.5 12.8 50.6 32h411c26.3 0 45.5 25 38.6 50.4l-41 152.3c-8.5 31.4-37 53.3-69.5 53.3H170.7l5.4 28.5c2.2 11.3 12.1 19.5 23.6 19.5H488c13.3 0 24 10.7 24 24s-10.7 24-24 24H199.7c-34.6 0-64.3-24.6-70.7-58.5L77.4 54.5c-.7-3.8-4-6.5-7.9-6.5H24C10.7 48 0 37.3 0 24zM128 464a48 48 0 1 1 96 0 48 48 0 1 1 -96 0zm336-48a48 48 0 1 1 0 96 48 48 0 1 1 0-96z"/>
+                                        </svg>
+                                        {product.stock <= 0 ? 'Out of Stock' : 'Add to Cart'}
+                                    </>
+                                )}
+                            </button>
+                        )}
 
                         <button
-                            onClick={handleAddToWishlist}
-                            disabled={isProductInWishlist}
-                            className={`focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 text-base flex items-center justify-center leading-none text-white w-full py-4 transition-colors ${
-                                isProductInWishlist
-                                    ? 'bg-lightpink cursor-not-allowed'
-                                    : 'bg-pink hover:shadow hover:shadow-xl'
+                            onClick={handleWishlistToggle}
+                            disabled={isUpdatingWishlist}
+                            className={`focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-800 text-base flex items-center justify-center leading-none text-white w-full py-4 transition-colors bg-pink hover:shadow hover:shadow-xl ${
+                                isUpdatingWishlist ? 'opacity-50 cursor-not-allowed' : ''
                             }`}
                         >
-                            <svg className="mr-3 fill-[white]" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
-                                <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9l2.6-2.4C267.2 438.6 256 404.6 256 368c0-97.2 78.8-176 176-176c28.3 0 55 6.7 78.7 18.5c.9-6.5 1.3-13 1.3-19.6v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5zM432 512a144 144 0 1 0 0-288 144 144 0 1 0 0 288zm16-208v48h48c8.8 0 16 7.2 16 16s-7.2 16-16 16H448v48c0 8.8-7.2 16-16 16s-16-7.2-16-16V384H368c-8.8 0-16-7.2-16-16s7.2-16 16-16h48V304c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
-                            </svg>
-                            {isProductInWishlist ? 'Already in wishlist' : 'Add to wishlist'}
+                            {isUpdatingWishlist ? (
+                                <div className="flex items-center">
+                                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2"></div>
+                                    {isProductInWishlist ? 'Removing...' : 'Adding...'}
+                                </div>
+                            ) : (
+                                <>
+                                    <svg className="mr-3 fill-[white]" xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 576 512">
+                                        {isProductInWishlist ? (
+                                            <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9L502.6 300.4c53.6-50 54.6-133.1 2-184.6-52.7-51.6-137.6-51.6-190.3 0l-2.3 2.2-2.3-2.2c-52.7-51.6-137.6-51.6-190.3 0-52.6 51.5-51.6 134.6 2 184.6z"/>
+                                        ) : (
+                                            <path d="M47.6 300.4L228.3 469.1c7.5 7 17.4 10.9 27.7 10.9s20.2-3.9 27.7-10.9l2.6-2.4C267.2 438.6 256 404.6 256 368c0-97.2 78.8-176 176-176c28.3 0 55 6.7 78.7 18.5c.9-6.5 1.3-13 1.3-19.6v-5.8c0-69.9-50.5-129.5-119.4-141C347 36.5 300.6 51.4 268 84L256 96 244 84c-32.6-32.6-79-47.5-124.6-39.9C50.5 55.6 0 115.2 0 185.1v5.8c0 41.5 17.2 81.2 47.6 109.5zM432 512a144 144 0 1 0 0-288 144 144 0 1 0 0 288zm16-208v48h48c8.8 0 16 7.2 16 16s-7.2 16-16 16H448v48c0 8.8-7.2 16-16 16s-16-7.2-16-16V384H368c-8.8 0-16-7.2-16-16s7.2-16 16-16h48V304c0-8.8 7.2-16 16-16s16 7.2 16 16z" />
+                                        )}
+                                    </svg>
+                                    {isProductInWishlist ? 'Remove from Wishlist' : 'Add to Wishlist'}
+                                </>
+                            )}
                         </button>
                     </div>
 

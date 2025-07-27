@@ -269,7 +269,7 @@ function InitializeApp({ children }: { children: React.ReactNode }) {
                 // Always load products (public data) first
                 if (productsStatus === 'idle') {
                     console.log('📦 Loading products...');
-                    await dispatch(fetchAllProducts()).unwrap();
+                    await dispatch(fetchAllProducts({})).unwrap();
                 }
 
                 // Load user-specific data if authenticated

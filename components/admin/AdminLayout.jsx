@@ -260,6 +260,12 @@ const AdminLayout = ({ children, activeTab, setActiveTab, onNavigateHome }) => {
             key: 'testimonials',
             icon: MessageSquare,
             description: 'Manage customer testimonials'
+        },
+        {
+            name:'Order Tracking',
+            key: 'orders',
+            icon: Star,
+            description: 'Track and manage orders'
         }
     ];
 
@@ -337,16 +343,16 @@ const AdminLayout = ({ children, activeTab, setActiveTab, onNavigateHome }) => {
                     <span className="font-medium">Back to Store</span>
                 </button>
 
-                <button
-                    onClick={() => {
-                        // Handle logout logic here
-                        console.log('Logout clicked');
-                    }}
-                    className="w-full flex items-center space-x-3 px-4 py-3 text-red-700 hover:bg-red-50 hover:text-red-900 rounded-lg transition-colors"
-                >
-                    <LogOut className="w-5 h-5 text-red-500" />
-                    <span className="font-medium">Sign Out</span>
-                </button>
+                {/*<button*/}
+                {/*    onClick={() => {*/}
+                {/*        // Handle logout logic here*/}
+                {/*        console.log('Logout clicked');*/}
+                {/*    }}*/}
+                {/*    className="w-full flex items-center space-x-3 px-4 py-3 text-red-700 hover:bg-red-50 hover:text-red-900 rounded-lg transition-colors"*/}
+                {/*>*/}
+                {/*    <LogOut className="w-5 h-5 text-red-500" />*/}
+                {/*    <span className="font-medium">Sign Out</span>*/}
+                {/*</button>*/}
             </div>
         </div>
     );
